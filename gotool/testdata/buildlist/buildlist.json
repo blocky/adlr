@@ -1,0 +1,23 @@
+{
+	"Path": "cloud.google.com/go",
+	"Version": "v0.33.1",
+	"Time": "2018-11-15T23:47:59Z",
+	"Indirect": true,
+	"GoMod": "/home/user/go/pkg/mod/cache/download/cloud.google.com/go/@v/v0.33.1.mod"
+}
+{
+	"Path": "github.com/BurntSushi/toml",
+	"Version": "v0.3.1",
+	"Time": "2018-08-15T10:47:33Z",
+	"Indirect": true,
+	"Dir": "/home/user/go/pkg/mod/github.com/!burnt!sushi/toml@v0.3.1",
+	"GoMod": "/home/user/go/pkg/mod/cache/download/github.com/!burnt!sushi/toml/@v/v0.3.1.mod"
+}
+{
+	"Path": "github.com/DATA-DOG/go-sqlmock",
+	"Version": "v1.5.0",
+	"Time": "2020-06-28T15:11:42Z",
+	"Indirect": true,
+	"Dir": "/home/user/go/pkg/mod/github.com/!d!a!t!a-!d!o!g/go-sqlmock@v1.5.0",
+	"GoMod": "/home/user/go/pkg/mod/cache/download/github.com/!d!a!t!a-!d!o!g/go-sqlmock/@v/v1.5.0.mod"
+}
