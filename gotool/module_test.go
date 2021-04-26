@@ -1,7 +1,7 @@
 package gotool_test
 
 import (
-	// "os"
+	"os"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -52,3 +52,23 @@ func TestModuleUnmarshal(t *testing.T) {
 	})
 }
 
+func TestFilterDirectImportModules(t *testing.T) {
+	t.Run("happy path", func(t *testing.T) {
+		f, _ := os.Open(TestDirModule + "directimports.json")
+		p := gotool.MakeBuildListParser()
+		list, err := p.ParseModuleList(f)
+		assert.Nil(t, err)
+
+		result := gotool.FilterDirectImportModules(list)
+		assert.Equal(t, Modules, result)
+	})
+	t.Run("empty on no direct imports", func(t *testing.T) {
+		f, _ := os.Open(TestDirModule + "indirectimports.json")
+		p := gotool.MakeBuildListParser()
+		list, err := p.ParseModuleList(f)
+		assert.Nil(t, err)
+
+		result := gotool.FilterDirectImportModules(list)
+		assert.Equal(t, []gotool.Module(nil), result)
+	})
+}
