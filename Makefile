@@ -1,4 +1,5 @@
-GO=go
+GOFLAGS=GOFLAGS=-mod=mod
+GO=$(GOFLAGS) go
 GOTEST=$(GO) test -count=1
 GOMOD=$(GO) mod
 GOTIDY=$(GOMOD) tidy
