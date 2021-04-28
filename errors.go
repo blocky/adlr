@@ -5,6 +5,8 @@ import (
 	"fmt"
 
 	"github.com/go-enry/go-license-detector/v4/licensedb"
+
+	"github.com/blocky/prettyprinter"
 )
 
 const (
@@ -52,4 +54,32 @@ func (lme LicenseMineError) Error() string {
 		return fmt.Sprintf("could not marshal: %v", err)
 	}
 	return fmt.Sprintf(LicMineErr, string(bytes))
+}
+
+type LockerError struct {
+	Name    string `json:"name"`
+	Version string `json:"version"`
+
+	Err []prettyprinter.FieldError `json:"errors"`
+}
+
+func MakeLockerError(
+	name, version string,
+	errs ...error,
+) LockerError {
+	return LockerError{
+		Name:    name,
+		Version: version,
+		Err:     makeFieldErrors(errs),
+	}
+}
+
+func makeFieldErrors(
+	errs []error,
+) []prettyprinter.FieldError {
+	var fieldErrs = make([]prettyprinter.FieldError, len(errs))
+	for i, err := range errs {
+		fieldErrs[i] = prettyprinter.FieldError{err}
+	}
+	return fieldErrs
 }

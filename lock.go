@@ -16,3 +16,13 @@ func MakeDependencyLock(
 		License: license,
 	}
 }
+
+func DepLocksToDepLockMap(
+	locks []DependencyLock,
+) map[string]DependencyLock {
+	var lockMap = make(map[string]DependencyLock, len(locks))
+	for _, lock := range locks {
+		lockMap[lock.Name] = lock
+	}
+	return lockMap
+}

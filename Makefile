@@ -1,5 +1,5 @@
 GOFLAGS=GOFLAGS=-mod=mod
-GO=$(GOFLAGS) go
+GO=$(GOFLAGS) go1.16.3
 GOTEST=$(GO) test -count=1
 GOMOD=$(GO) mod
 GOTIDY=$(GOMOD) tidy
