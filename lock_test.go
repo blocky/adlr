@@ -58,13 +58,52 @@ func TestDepLocksToDepLocksMap(t *testing.T) {
 	assert.Equal(t, dl3, dlMap[dl3.Name])
 }
 
+func TestMarshalDependencyLocks(t *testing.T) {
+	t.Run("happy path", func(t *testing.T) {
+		bytes, err := reader.
+			NewLimitedReader().
+			ReadFileFromPath("./testdata/lock/marshaled.json")
+		assert.Nil(t, err)
+		result, err := adlr.MarshalDependencyLocks(DependencyLocks)
+
+		assert.Nil(t, err)
+		assert.Equal(t, string(bytes), string(result))
+	})
+}
+
 func TestUnmarshalDependencyLocks(t *testing.T) {
-	bytes, err := reader.
-		NewLimitedReader().
-		ReadFileFromPath("./testdata/lock/deserialized.txt")
+	t.Run("happy path", func(t *testing.T) {
+		bytes, err := reader.
+			NewLimitedReader().
+			ReadFileFromPath("./testdata/lock/marshaled.json")
+		assert.Nil(t, err)
+		result, err := adlr.UnmarshalDependencyLocks(bytes)
+
+		assert.Nil(t, err)
+		assert.Equal(t, DependencyLocks, result)
+	})
+	t.Run("error on unmarshaling", func(t *testing.T) {
+		bytes := []byte("{\"bad\":\"json\"}")
+		_, err := adlr.UnmarshalDependencyLocks(bytes)
+
+		assert.EqualError(t, err,
+			"json: cannot unmarshal object into "+
+				"Go value of type []adlr.DependencyLock")
+	})
+}
+
+func TestLocksSerialization(t *testing.T) {
+	reader := reader.NewLimitedReader()
+
+	bytes, err := reader.ReadFileFromPath("./testdata/lock/deserialized.json")
 	assert.Nil(t, err)
-	result, err := adlr.UnmarshalDependencyLocks(bytes)
+	expected, err := adlr.UnmarshalDependencyLocks(bytes)
 	assert.Nil(t, err)
 
-	assert.Equal(t, DependencyLocks, result)
+	bytes, err = reader.ReadFileFromPath("./testdata/lock/serialized.txt")
+	assert.Nil(t, err)
+	result, err := adlr.DeserializeLocks(bytes)
+	assert.Nil(t, err)
+
+	assert.Equal(t, expected, result)
 }
