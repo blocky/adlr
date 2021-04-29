@@ -10,10 +10,11 @@ import (
 )
 
 const (
-	MinConfErr = "does not meet minimum confidence: got %f lt %f"
-	MinLeadErr = "does not meet minimum lead: %f - %f lt %f"
-	LicProsErr = "error license prospecting: %v"
-	LicMineErr = "error license mining: %v"
+	MinConfErr  = "does not meet minimum confidence: got %f lt %f"
+	MinLeadErr  = "does not meet minimum lead: %f - %f lt %f"
+	LicProsErr  = "error license prospecting: %v"
+	LicMineErr  = "error license mining: %v"
+	LicAuditErr = "detected non-whitelisted licenses. Remove or Whitelist"
 )
 
 type MinConfidenceError struct {
@@ -82,4 +83,24 @@ func makeFieldErrors(
 		fieldErrs[i] = prettyprinter.FieldError{err}
 	}
 	return fieldErrs
+}
+
+type LicenseAuditError struct {
+	Licenses []error
+}
+
+func (lae LicenseAuditError) Error() string {
+	bytes, err := json.MarshalIndent(struct {
+		Msg      string                     `json:"whitelist"`
+		Licenses []prettyprinter.FieldError `json:"licenses"`
+	}{
+		Msg:      LicAuditErr,
+		Licenses: makeFieldErrors(lae.Licenses),
+	},
+		"", " ",
+	)
+	if err != nil {
+		return fmt.Sprintf("could not marshal: %v", err)
+	}
+	return fmt.Sprintf(string(bytes))
 }
