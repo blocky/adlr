@@ -1,0 +1,34 @@
+[
+ {
+  "name": "alpha",
+  "version": "v-aa",
+  "license": {
+   "kind": "kind-a",
+   "text": "text-a"
+  }
+ },
+ {
+  "name": "bravo",
+  "version": "v-ba",
+  "license": {
+   "kind": "kind-b",
+   "text": "text-b"
+  }
+ },
+ {
+  "name": "charlie",
+  "version": "v-ca",
+  "license": {
+   "kind": "kind-c",
+   "text": "text-c"
+  }
+ },
+ {
+  "name": "delta",
+  "version": "v-da",
+  "license": {
+   "kind": "kind-d",
+   "text": "text-d"
+  }
+ }
+]

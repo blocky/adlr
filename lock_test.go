@@ -6,7 +6,35 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"github.com/blocky/adlr"
+	"github.com/blocky/adlr/reader"
 )
+
+var DependencyLocks = []adlr.DependencyLock{
+	adlr.DependencyLock{
+		"github.com/spf13/viper",
+		"v1.4.0",
+		adlr.License{
+			"MIT",
+			"MIT License",
+		},
+	},
+	adlr.DependencyLock{
+		"github.com/stretchr/testify",
+		"v1.6.1",
+		adlr.License{
+			"MIT",
+			"MIT License",
+		},
+	},
+	adlr.DependencyLock{
+		"github.com/ybbus/jsonrpc",
+		"v2.1.2+incompatible",
+		adlr.License{
+			"MIT",
+			"MIT License",
+		},
+	},
+}
 
 func TestMakeDependencyLock(t *testing.T) {
 	l := adlr.MakeLicense("kind", "text")
@@ -28,4 +56,15 @@ func TestDepLocksToDepLocksMap(t *testing.T) {
 	assert.Equal(t, dl1, dlMap[dl1.Name])
 	assert.Equal(t, dl2, dlMap[dl2.Name])
 	assert.Equal(t, dl3, dlMap[dl3.Name])
+}
+
+func TestUnmarshalDependencyLocks(t *testing.T) {
+	bytes, err := reader.
+		NewLimitedReader().
+		ReadFileFromPath("./testdata/lock/deserialized.txt")
+	assert.Nil(t, err)
+	result, err := adlr.UnmarshalDependencyLocks(bytes)
+	assert.Nil(t, err)
+
+	assert.Equal(t, DependencyLocks, result)
 }

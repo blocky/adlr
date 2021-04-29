@@ -52,3 +52,24 @@ func (d Dependency) ToDependencyLock() DependencyLock {
 		d.License,
 	)
 }
+
+func DepsToDepLockArray(
+	deps []Dependency,
+) []DependencyLock {
+	var locks = make([]DependencyLock, len(deps))
+	for i, dep := range deps {
+		locks[i] = dep.ToDependencyLock()
+	}
+	return locks
+}
+
+func DepsToDepLockMap(
+	deps []Dependency,
+) map[string]DependencyLock {
+	var lockMap = make(map[string]DependencyLock, len(deps))
+	for _, dep := range deps {
+		lock := dep.ToDependencyLock()
+		lockMap[lock.Name] = lock
+	}
+	return lockMap
+}
