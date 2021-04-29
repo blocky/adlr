@@ -91,3 +91,19 @@ func TestUnmarshalDependencyLocks(t *testing.T) {
 				"Go value of type []adlr.DependencyLock")
 	})
 }
+
+func TestLocksSerialization(t *testing.T) {
+	reader := reader.NewLimitedReader()
+
+	bytes, err := reader.ReadFileFromPath("./testdata/lock/deserialized.json")
+	assert.Nil(t, err)
+	expected, err := adlr.UnmarshalDependencyLocks(bytes)
+	assert.Nil(t, err)
+
+	bytes, err = reader.ReadFileFromPath("./testdata/lock/serialized.txt")
+	assert.Nil(t, err)
+	result, err := adlr.DeserializeLocks(bytes)
+	assert.Nil(t, err)
+
+	assert.Equal(t, expected, result)
+}

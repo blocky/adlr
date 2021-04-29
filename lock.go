@@ -1,6 +1,9 @@
 package adlr
 
-import "encoding/json"
+import (
+	"bytes"
+	"encoding/json"
+)
 
 type DependencyLock struct {
 	Name    string  `json:"name"`
@@ -41,4 +44,24 @@ func UnmarshalDependencyLocks(
 	var locks []DependencyLock
 	err := json.Unmarshal(bytes, &locks)
 	return locks, err
+}
+
+func DeserializeLocks(
+	b []byte,
+) ([]DependencyLock, error) {
+	b = bytes.ReplaceAll(b, []byte("\\s"), []byte(" "))
+	return UnmarshalDependencyLocks(b)
+}
+
+func SerializeLocks(
+	locks []DependencyLock,
+) ([]byte, error) {
+	b, err := MarshalDependencyLocks(locks)
+	if err != nil {
+		return nil, err
+	}
+	// go ldflags require no spaces or newline chars
+	b = bytes.ReplaceAll(b, []byte("\n"), []byte(""))
+	b = bytes.ReplaceAll(b, []byte(" "), []byte("\\s"))
+	return b, nil
 }
