@@ -39,22 +39,50 @@ func TestDependencyAddError(t *testing.T) {
 	})
 }
 
-func TestDependencyToDependencyLock(t *testing.T) {
-	m := gotool.Module{
-		Path:    "/home/user/path",
-		Version: "v1.0.1",
+func TestDepsToDepLockArray(t *testing.T) {
+	d1 := adlr.Dependency{
+		Module:  gotool.Module{Path: "p1", Version: "v1"},
+		License: adlr.MakeLicense("k1", "t1"),
 	}
-	l := adlr.License{
-		Kind: "MIT",
-		Text: "license text",
+	d2 := adlr.Dependency{
+		Module:  gotool.Module{Path: "p2", Version: "v2"},
+		License: adlr.MakeLicense("k2", "t2"),
 	}
-	d := adlr.Dependency{
-		Module:  m,
-		License: l,
+	d3 := adlr.Dependency{
+		Module:  gotool.Module{Path: "p3", Version: "v3"},
+		License: adlr.MakeLicense("k3", "t3"),
 	}
-	dl := d.ToDependencyLock()
+	dSlice := []adlr.Dependency{d1, d2, d3}
+	dlSlice := adlr.DepsToDepLockArray(dSlice)
 
-	assert.Equal(t, m.Path, dl.Name)
-	assert.Equal(t, m.Version, dl.Version)
-	assert.Equal(t, l, dl.License)
+	for i, d := range dSlice {
+		var dl = dlSlice[i]
+		assert.Equal(t, d.Module.Path, dl.Name)
+		assert.Equal(t, d.Module.Version, dl.Version)
+		assert.Equal(t, d.License, dl.License)
+	}
+}
+
+func TestDepsToDepLockMap(t *testing.T) {
+	d1 := adlr.Dependency{
+		Module:  gotool.Module{Path: "p1", Version: "v1"},
+		License: adlr.MakeLicense("k1", "t1"),
+	}
+	d2 := adlr.Dependency{
+		Module:  gotool.Module{Path: "p2", Version: "v2"},
+		License: adlr.MakeLicense("k2", "t2"),
+	}
+	d3 := adlr.Dependency{
+		Module:  gotool.Module{Path: "p3", Version: "v3"},
+		License: adlr.MakeLicense("k3", "t3"),
+	}
+	dSlice := []adlr.Dependency{d1, d2, d3}
+	dlMap := adlr.DepsToDepLockMap(dSlice)
+
+	for _, d := range dSlice {
+		var dl = dlMap[d.Module.Path]
+		assert.Equal(t, d.Module.Path, dl.Name)
+		assert.Equal(t, d.Module.Version, dl.Version)
+		assert.Equal(t, d.License, dl.License)
+	}
 }

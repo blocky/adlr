@@ -1,5 +1,7 @@
 package adlr
 
+import "encoding/json"
+
 type DependencyLock struct {
 	Name    string  `json:"name"`
 	Version string  `json:"version"`
@@ -25,4 +27,12 @@ func DepLocksToDepLockMap(
 		lockMap[lock.Name] = lock
 	}
 	return lockMap
+}
+
+func UnmarshalDependencyLocks(
+	bytes []byte,
+) ([]DependencyLock, error) {
+	var locks []DependencyLock
+	err := json.Unmarshal(bytes, &locks)
+	return locks, err
 }
