@@ -29,6 +29,12 @@ func DepLocksToDepLockMap(
 	return lockMap
 }
 
+func MarshalDependencyLocks(
+	locks []DependencyLock,
+) ([]byte, error) {
+	return json.Marshal(locks)
+}
+
 func UnmarshalDependencyLocks(
 	bytes []byte,
 ) ([]DependencyLock, error) {
