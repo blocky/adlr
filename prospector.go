@@ -8,13 +8,13 @@ func MakeLicenseProspector() LicenseProspector {
 	return LicenseProspector{}
 }
 
-func (lp LicenseProspector) ProspectLicenses(
+func (lp LicenseProspector) Prospect(
 	deps ...Dependency,
 ) ([]Dependency, error) {
 	var prospectErrs []licensedb.Result
 
 	for i, dep := range deps {
-		result := lp.TextMineLicenses(dep.Module.Dir)
+		result := lp.ProspectLicense(dep.Module.Dir)
 		deps[i].AddResult(result)
 
 		if result.ErrStr != "" { // could not find dir or license files
@@ -27,7 +27,7 @@ func (lp LicenseProspector) ProspectLicenses(
 	return deps, nil
 }
 
-func (lp LicenseProspector) TextMineLicenses(
+func (lp LicenseProspector) ProspectLicense(
 	dir string,
 ) licensedb.Result {
 	// always returns n=1 array on one arg

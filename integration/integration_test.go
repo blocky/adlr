@@ -39,7 +39,7 @@ func (suite IntegrationTestSuite) TestADLR() {
 
 	// using the paths of the modules, find their licenses
 	prospector := adlr.MakeLicenseProspector()
-	prospects, err := prospector.ProspectLicenses(deps...)
+	prospects, err := prospector.Prospect(deps...)
 	suite.Nil(err)
 
 	// determine (best guess) module license specifics
@@ -59,6 +59,6 @@ func (suite IntegrationTestSuite) TestADLR() {
 	suite.Nil(err)
 	auditor := adlr.MakeLicenseAuditor()
 	suite.Nil(err)
-	err = auditor.AuditLocks(locks)
+	err = auditor.Audit(locks)
 	suite.Nil(err)
 }

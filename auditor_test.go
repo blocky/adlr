@@ -52,12 +52,12 @@ func TestLicenseAuditorAuditLock(t *testing.T) {
 	})
 }
 
-func TestLicenseAuditorAuditLocks(t *testing.T) {
+func TestLicenseAuditorAudit(t *testing.T) {
 	t.Run("happy path", func(t *testing.T) {
 		w := adlr.MakeLicenseWhitelistFromRaw(cerealList)
 		a := adlr.MakeLicenseAuditorFromRaw(w)
 
-		err := a.AuditLocks(AuditLocks)
+		err := a.Audit(AuditLocks)
 		assert.Nil(t, err)
 	})
 	t.Run("error on non-whitelisted licenses", func(t *testing.T) {
@@ -70,7 +70,7 @@ func TestLicenseAuditorAuditLocks(t *testing.T) {
 			"\"2: [cheerios]\",\n  " +
 			"\"3: [cocoapuffs]\"\n ]\n}"
 
-		err := a.AuditLocks(AuditLocks)
+		err := a.Audit(AuditLocks)
 		assert.EqualError(t, err, auditErr)
 	})
 }
