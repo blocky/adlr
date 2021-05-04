@@ -8,6 +8,7 @@ import (
 type DependencyLock struct {
 	Name    string  `json:"name"`
 	Version string  `json:"version"`
+	ErrStr  string  `json:"err,omitempty"`
 	License License `json:"license"`
 }
 
@@ -20,6 +21,12 @@ func MakeDependencyLock(
 		Version: version,
 		License: license,
 	}
+}
+
+func (lock *DependencyLock) AddErrStr(
+	errStr string,
+) {
+	lock.ErrStr = errStr
 }
 
 func DepLocksToDepLockMap(

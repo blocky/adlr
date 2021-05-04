@@ -19,6 +19,7 @@ type Minimums struct {
 
 type LicenseMiner struct {
 	minimum Minimums
+	reader  *reader.LimitedReader
 }
 
 func MakeLicenseMiner() LicenseMiner {
@@ -26,46 +27,51 @@ func MakeLicenseMiner() LicenseMiner {
 		Confidence: Confidence,
 		Lead:       Lead,
 	}
-	return MakeLicenseMinerFromRaw(mins)
+	reader := reader.NewLimitedReaderFromRaw(reader.Kilobyte * 100)
+	return MakeLicenseMinerFromRaw(mins, reader)
 }
 
 func MakeLicenseMinerFromRaw(
 	minimums Minimums,
+	reader *reader.LimitedReader,
 ) LicenseMiner {
-	return LicenseMiner{minimums}
+	return LicenseMiner{minimums, reader}
 }
 
 func (lm LicenseMiner) Mine(
-	prospects ...Dependency,
-) ([]Dependency, error) {
-	var mineErrs []Dependency
+	mines ...Mine,
+) ([]DependencyLock, error) {
+	var mineErrs []Mine
 
-	for i := 0; i < len(prospects); i++ {
-		license, err := lm.MineLicense(prospects[i])
+	var locks = make([]DependencyLock, len(mines))
+	for i, mine := range mines {
+		license, err := lm.MineLicense(mine)
 
 		if err != nil {
-			prospects[i].AddError(err)
-			mineErrs = append(mineErrs, prospects[i])
-			continue
-		} else {
-			prospects[i].AddLicense(license)
+			mine.AddError(err)
+			mineErrs = append(mineErrs, mine)
 		}
+		locks[i] = MakeDependencyLock(
+			mine.Name,
+			mine.Version,
+			license,
+		)
+
 	}
 	if len(mineErrs) != 0 {
-		// print this err. license lock will attempt to handle these
-		return prospects, &LicenseMineError{mineErrs}
+		return locks, &LicenseMineError{mineErrs}
 	}
-	return prospects, nil
+	return locks, nil
 }
 
 func (lm LicenseMiner) MineLicense(
-	dep Dependency,
+	mine Mine,
 ) (License, error) {
-	match, err := lm.DetermineMatch(dep.Result.Matches...)
+	match, err := lm.DetermineMatch(mine.Matches...)
 	if err != nil {
 		return License{}, err
 	}
-	text, err := lm.DetermineLicenseText(dep.Module.Dir + "/" + match.File)
+	text, err := lm.DetermineLicenseText(mine.Dir + "/" + match.File)
 	if err != nil {
 		return License{}, err
 	}
@@ -75,8 +81,7 @@ func (lm LicenseMiner) MineLicense(
 func (lm LicenseMiner) DetermineLicenseText(
 	path string,
 ) (string, error) {
-	reader := reader.NewLimitedReader()
-	bytes, err := reader.ReadFileFromPath(path)
+	bytes, err := lm.reader.ReadFileFromPath(path)
 	if err != nil {
 		return "", err
 	}

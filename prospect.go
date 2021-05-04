@@ -3,7 +3,8 @@ package adlr
 import "github.com/blocky/adlr/gotool"
 
 type Prospect struct {
-	Path    string
+	Name    string
+	Dir     string
 	Version string
 	ErrStr  string
 }
@@ -15,6 +16,7 @@ func MakeProspects(
 	for i, mod := range modules {
 		prospects[i] = MakeProspect(
 			mod.Path,
+			mod.Dir,
 			mod.Version,
 		)
 	}
@@ -22,20 +24,19 @@ func MakeProspects(
 }
 
 func MakeProspect(
-	path, version string,
+	name string,
+	dir string,
+	version string,
 ) Prospect {
 	return Prospect{
-		Path:    path,
+		Name:    name,
+		Dir:     dir,
 		Version: version,
 	}
 }
 
-func (p *Prospect) AddError(
-	err error,
+func (p *Prospect) AddErrStr(
+	errStr string,
 ) {
-	var errStr string
-	if err != nil {
-		errStr = err.Error()
-	}
 	p.ErrStr = errStr
 }

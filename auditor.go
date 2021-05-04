@@ -2,6 +2,8 @@ package adlr
 
 import "errors"
 
+const NonWhitelistedLicenseErr = "non-whitelisted license: "
+
 type LicenseAuditor struct {
 	whitelist LicenseWhitelist
 }
@@ -20,11 +22,13 @@ func MakeLicenseAuditorFromRaw(
 func (auditor LicenseAuditor) Audit(
 	locks []DependencyLock,
 ) error {
-	var auditErrs []error
+	var auditErrs []DependencyLock
+
 	for _, lock := range locks {
 		err := auditor.AuditLock(lock)
 		if err != nil {
-			auditErrs = append(auditErrs, err)
+			lock.AddErrStr(err.Error())
+			auditErrs = append(auditErrs, lock)
 		}
 	}
 	if len(auditErrs) != 0 {
@@ -36,11 +40,10 @@ func (auditor LicenseAuditor) Audit(
 func (auditor LicenseAuditor) AuditLock(
 	lock DependencyLock,
 ) error {
-	var name = lock.Name
 	var license = lock.License.Kind
 
 	if !auditor.whitelist.Find(license) {
-		return errors.New(name + ": [" + license + "]")
+		return errors.New(NonWhitelistedLicenseErr + license)
 	}
 	return nil
 }

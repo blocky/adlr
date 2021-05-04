@@ -3,19 +3,22 @@ package adlr
 import "github.com/go-enry/go-license-detector/v4/licensedb"
 
 type Mine struct {
-	Path    string
+	Name    string
+	Dir     string
 	Version string
 	ErrStr  string
 	Matches []licensedb.Match
 }
 
 func MakeMine(
-	path string,
+	name string,
+	dir string,
 	version string,
 	matches []licensedb.Match,
 ) Mine {
 	return Mine{
-		Path:    path,
+		Name:    name,
+		Dir:     dir,
 		Version: version,
 		Matches: matches,
 	}

@@ -35,27 +35,28 @@ func (suite IntegrationTestSuite) TestADLR() {
 
 	// filter out non-direct modules from the buildlist
 	direct := gotool.FilterDirectImportModules(mods)
-	deps := adlr.MakeDependencies(direct...)
+	prospects := adlr.MakeProspects(direct...)
 
 	// using the paths of the modules, find their licenses
 	prospector := adlr.MakeLicenseProspector()
-	prospects, err := prospector.Prospect(deps...)
+	mines, err := prospector.Prospect(prospects...)
 	suite.Nil(err)
 
 	// determine (best guess) module license specifics
 	miner := adlr.MakeLicenseMiner()
-	mined, err := miner.Mine(prospects...)
+	locks, err := miner.Mine(mines...)
 	suite.Nil(err)
 
 	// create a license.lock with dependency licenses
 	licenselock := adlr.MakeLicenseLock("./")
-	err = licenselock.Lock(mined)
+	// err = licenselock.Lock(mined)
+	err = licenselock.Lock(locks)
 	defer os.Remove("./" + adlr.LicenseLockName)
 	suite.Nil(err)
 
 	// vet license types with whitelist to ensure license
 	// requirement fulfillment
-	locks, err := licenselock.Read()
+	locks, err = licenselock.Read()
 	suite.Nil(err)
 	auditor := adlr.MakeLicenseAuditor()
 	suite.Nil(err)

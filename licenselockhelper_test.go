@@ -1,7 +1,6 @@
 package adlr_test
 
 import (
-	"encoding/json"
 	"io/ioutil"
 	"os"
 
@@ -51,16 +50,6 @@ func (l LicenseLockHelper) UnmarshalDependencyLocks(
 	l.checkError(err, "failed to unmarshal locks")
 
 	return locks
-}
-
-func (l LicenseLockHelper) UnmarshalDependencies(
-	bytes []byte,
-) []adlr.Dependency {
-	var deps []adlr.Dependency
-	err := json.Unmarshal(bytes, &deps)
-	l.checkError(err, "failed to unmarshal dependencies")
-
-	return deps
 }
 
 func (l LicenseLockHelper) WriteFile(

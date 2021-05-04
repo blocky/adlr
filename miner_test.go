@@ -8,6 +8,7 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"github.com/blocky/adlr"
+	"github.com/blocky/adlr/reader"
 )
 
 const MinerHappyPathPath = "./testdata/miner/happypath/license"
@@ -18,7 +19,8 @@ func TestLicenseMinerMeetsMinimumConfidence(t *testing.T) {
 	t.Run("happy path", func(t *testing.T) {
 		m := float32(0.9)
 		mins := adlr.Minimums{Confidence: minConf}
-		miner := adlr.MakeLicenseMinerFromRaw(mins)
+		reader := reader.NewLimitedReader()
+		miner := adlr.MakeLicenseMinerFromRaw(mins, reader)
 
 		err := miner.MeetsMinimumConfidence(m)
 		assert.Nil(t, err)
@@ -27,7 +29,8 @@ func TestLicenseMinerMeetsMinimumConfidence(t *testing.T) {
 		m := minConf
 		confErr := &adlr.MinConfidenceError{m, minConf}
 		mins := adlr.Minimums{Confidence: minConf}
-		miner := adlr.MakeLicenseMinerFromRaw(mins)
+		reader := reader.NewLimitedReader()
+		miner := adlr.MakeLicenseMinerFromRaw(mins, reader)
 
 		err := miner.MeetsMinimumConfidence(m)
 		assert.EqualError(t, err, confErr.Error())
@@ -36,7 +39,8 @@ func TestLicenseMinerMeetsMinimumConfidence(t *testing.T) {
 		m := float32(0.1)
 		confErr := &adlr.MinConfidenceError{m, minConf}
 		mins := adlr.Minimums{Confidence: minConf}
-		miner := adlr.MakeLicenseMinerFromRaw(mins)
+		reader := reader.NewLimitedReader()
+		miner := adlr.MakeLicenseMinerFromRaw(mins, reader)
 
 		err := miner.MeetsMinimumConfidence(m)
 		assert.EqualError(t, err, confErr.Error())
@@ -49,7 +53,8 @@ func TestLicenseMinerMeetsMinimumLead(t *testing.T) {
 		m1 := float32(0.9)
 		m2 := float32(0.1)
 		mins := adlr.Minimums{Lead: minLead}
-		miner := adlr.MakeLicenseMinerFromRaw(mins)
+		reader := reader.NewLimitedReader()
+		miner := adlr.MakeLicenseMinerFromRaw(mins, reader)
 
 		err := miner.MeetsMinimumLead(m1, m2)
 		assert.Nil(t, err)
@@ -59,7 +64,8 @@ func TestLicenseMinerMeetsMinimumLead(t *testing.T) {
 		m2 := float32(minLead)
 		leadErr := &adlr.MinLeadError{m1, m2, minLead}
 		mins := adlr.Minimums{Lead: minLead}
-		miner := adlr.MakeLicenseMinerFromRaw(mins)
+		reader := reader.NewLimitedReader()
+		miner := adlr.MakeLicenseMinerFromRaw(mins, reader)
 
 		err := miner.MeetsMinimumLead(m1, m2)
 		assert.EqualError(t, err, leadErr.Error())
@@ -69,7 +75,8 @@ func TestLicenseMinerMeetsMinimumLead(t *testing.T) {
 		m2 := float32(0.8)
 		leadErr := &adlr.MinLeadError{m1, m2, minLead}
 		mins := adlr.Minimums{Lead: minLead}
-		miner := adlr.MakeLicenseMinerFromRaw(mins)
+		reader := reader.NewLimitedReader()
+		miner := adlr.MakeLicenseMinerFromRaw(mins, reader)
 
 		err := miner.MeetsMinimumLead(m1, m2)
 		assert.EqualError(t, err, leadErr.Error())
@@ -112,7 +119,8 @@ func TestLicenseMinerDetermineMatch(t *testing.T) {
 			licensedb.Match{Confidence: 0.9, License: "MIT"},
 		}
 		mins := adlr.Minimums{Confidence: 0.75, Lead: 0.0}
-		miner := adlr.MakeLicenseMinerFromRaw(mins)
+		reader := reader.NewLimitedReader()
+		miner := adlr.MakeLicenseMinerFromRaw(mins, reader)
 		m, err := miner.DetermineMatch(matches...)
 
 		assert.Nil(t, err)
@@ -124,7 +132,8 @@ func TestLicenseMinerDetermineMatch(t *testing.T) {
 		}
 		confErr := &adlr.MinConfidenceError{0.5, 0.6}
 		mins := adlr.Minimums{Confidence: 0.6, Lead: 0.0}
-		miner := adlr.MakeLicenseMinerFromRaw(mins)
+		reader := reader.NewLimitedReader()
+		miner := adlr.MakeLicenseMinerFromRaw(mins, reader)
 		_, err := miner.DetermineMatch(matches...)
 
 		assert.EqualError(t, err, confErr.Error())
@@ -135,7 +144,8 @@ func TestLicenseMinerDetermineMatch(t *testing.T) {
 			licensedb.Match{Confidence: 0.5, License: "MIT2"},
 		}
 		mins := adlr.Minimums{Confidence: 0.0, Lead: 0.0}
-		miner := adlr.MakeLicenseMinerFromRaw(mins)
+		reader := reader.NewLimitedReader()
+		miner := adlr.MakeLicenseMinerFromRaw(mins, reader)
 		m, err := miner.DetermineMatch(matches...)
 
 		assert.Nil(t, err)
@@ -148,7 +158,8 @@ func TestLicenseMinerDetermineMatch(t *testing.T) {
 		}
 		confErr := &adlr.MinConfidenceError{0.1, 0.2}
 		mins := adlr.Minimums{Confidence: 0.2, Lead: 0.0}
-		miner := adlr.MakeLicenseMinerFromRaw(mins)
+		reader := reader.NewLimitedReader()
+		miner := adlr.MakeLicenseMinerFromRaw(mins, reader)
 		_, err := miner.DetermineMatch(matches...)
 
 		assert.EqualError(t, err, confErr.Error())
@@ -160,7 +171,8 @@ func TestLicenseMinerDetermineMatch(t *testing.T) {
 		}
 		leadErr := &adlr.MinLeadError{0.9, 0.8, 0.3}
 		mins := adlr.Minimums{Confidence: 0.0, Lead: 0.3}
-		miner := adlr.MakeLicenseMinerFromRaw(mins)
+		reader := reader.NewLimitedReader()
+		miner := adlr.MakeLicenseMinerFromRaw(mins, reader)
 		_, err := miner.DetermineMatch(matches...)
 
 		assert.EqualError(t, err, leadErr.Error())

@@ -4,8 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/go-enry/go-license-detector/v4/licensedb"
-
 	"github.com/blocky/prettyprinter"
 )
 
@@ -14,7 +12,8 @@ const (
 	MinLeadErr  = "does not meet minimum lead: %f - %f lt %f"
 	LicProsErr  = "error license prospecting: %v"
 	LicMineErr  = "error license mining: %v"
-	LicAuditErr = "detected non-whitelisted licenses. Remove or Whitelist"
+	LicAuditErr = "detected non-whitelisted licenses. Remove or Whitelist: %v"
+	DepLockErr  = "error locking dependencies %v:"
 )
 
 type MinConfidenceError struct {
@@ -34,11 +33,11 @@ func (mle MinLeadError) Error() string {
 }
 
 type LicenseProspectingError struct {
-	Results []licensedb.Result
+	Prospects []Prospect
 }
 
 func (lpe LicenseProspectingError) Error() string {
-	bytes, err := json.MarshalIndent(lpe.Results, "", " ")
+	bytes, err := json.MarshalIndent(lpe.Prospects, "", " ")
 	if err != nil {
 		return fmt.Sprintf("could not marshal: %v", err)
 	}
@@ -46,15 +45,27 @@ func (lpe LicenseProspectingError) Error() string {
 }
 
 type LicenseMineError struct {
-	Deps []Dependency
+	Mines []Mine
 }
 
 func (lme LicenseMineError) Error() string {
-	bytes, err := json.MarshalIndent(lme.Deps, "", " ")
+	bytes, err := json.MarshalIndent(lme.Mines, "", " ")
 	if err != nil {
 		return fmt.Sprintf("could not marshal: %v", err)
 	}
 	return fmt.Sprintf(LicMineErr, string(bytes))
+}
+
+type DependencyLockerError struct {
+	Locks []DependencyLock
+}
+
+func (dle DependencyLockerError) Error() string {
+	bytes, err := json.MarshalIndent(dle.Locks, "", " ")
+	if err != nil {
+		return fmt.Sprintf("could not marshal: %v", err)
+	}
+	return fmt.Sprintf(DepLockErr, string(bytes))
 }
 
 type LockerError struct {
@@ -86,21 +97,13 @@ func makeFieldErrors(
 }
 
 type LicenseAuditError struct {
-	Licenses []error
+	Locks []DependencyLock
 }
 
 func (lae LicenseAuditError) Error() string {
-	bytes, err := json.MarshalIndent(struct {
-		Msg      string                     `json:"whitelist"`
-		Licenses []prettyprinter.FieldError `json:"licenses"`
-	}{
-		Msg:      LicAuditErr,
-		Licenses: makeFieldErrors(lae.Licenses),
-	},
-		"", " ",
-	)
+	bytes, err := json.MarshalIndent(lae.Locks, "", " ")
 	if err != nil {
 		return fmt.Sprintf("could not marshal: %v", err)
 	}
-	return fmt.Sprintf(string(bytes))
+	return fmt.Sprintf(LicAuditErr, string(bytes))
 }

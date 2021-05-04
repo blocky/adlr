@@ -11,10 +11,14 @@ import (
 )
 
 func TestMakeMine(t *testing.T) {
-	matches := []licensedb.Match{}
-	m := adlr.MakeMine("path", "version", matches)
+	matches := []licensedb.Match{
+		licensedb.Match{License: "MIT", File: "license"},
+		licensedb.Match{License: "Apache2,0", File: "License"},
+	}
+	m := adlr.MakeMine("name", "dir", "version", matches)
 
-	assert.Equal(t, "path", m.Path)
+	assert.Equal(t, "name", m.Name)
+	assert.Equal(t, "dir", m.Dir)
 	assert.Equal(t, "version", m.Version)
 	assert.Equal(t, matches, m.Matches)
 }

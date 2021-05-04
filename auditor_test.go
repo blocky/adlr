@@ -15,9 +15,27 @@ var cerealList = []string{
 }
 
 var AuditLocks = []adlr.DependencyLock{
-	adlr.DependencyLock{Name: "1", License: adlr.License{Kind: "fruitloops"}},
-	adlr.DependencyLock{Name: "2", License: adlr.License{Kind: "cheerios"}},
-	adlr.DependencyLock{Name: "3", License: adlr.License{Kind: "cocoapuffs"}},
+	adlr.DependencyLock{
+		Name:    "1",
+		Version: "v1",
+		License: adlr.License{
+			Kind: "fruitloops",
+		},
+	},
+	adlr.DependencyLock{
+		Name:    "2",
+		Version: "v2",
+		License: adlr.License{
+			Kind: "cheerios",
+		},
+	},
+	adlr.DependencyLock{
+		Name:    "3",
+		Version: "v3",
+		License: adlr.License{
+			Kind: "cocoapuffs",
+		},
+	},
 }
 
 func TestLicenseAuditorAuditLock(t *testing.T) {
@@ -40,15 +58,15 @@ func TestLicenseAuditorAuditLock(t *testing.T) {
 
 		lock := AuditLocks[0]
 		err := a.AuditLock(lock)
-		assert.EqualError(t, err, lock.Name+": ["+lock.License.Kind+"]")
+		assert.EqualError(t, err, adlr.NonWhitelistedLicenseErr+lock.License.Kind)
 
 		lock = AuditLocks[1]
 		err = a.AuditLock(lock)
-		assert.EqualError(t, err, lock.Name+": ["+lock.License.Kind+"]")
+		assert.EqualError(t, err, adlr.NonWhitelistedLicenseErr+lock.License.Kind)
 
 		lock = AuditLocks[2]
 		err = a.AuditLock(lock)
-		assert.EqualError(t, err, lock.Name+": ["+lock.License.Kind+"]")
+		assert.EqualError(t, err, adlr.NonWhitelistedLicenseErr+lock.License.Kind)
 	})
 }
 
@@ -63,12 +81,31 @@ func TestLicenseAuditorAudit(t *testing.T) {
 	t.Run("error on non-whitelisted licenses", func(t *testing.T) {
 		w := adlr.MakeLicenseWhitelistFromRaw([]string{"unicorn"})
 		a := adlr.MakeLicenseAuditorFromRaw(w)
-		auditErr := "{\n " +
-			"\"whitelist\": \"detected non-whitelisted licenses. Remove or Whitelist\",\n " +
-			"\"licenses\": [\n  " +
-			"\"1: [fruitloops]\",\n  " +
-			"\"2: [cheerios]\",\n  " +
-			"\"3: [cocoapuffs]\"\n ]\n}"
+		auditErr := "detected non-whitelisted licenses. Remove or Whitelist: [\n " +
+			"{\n  " +
+			"\"name\": \"1\",\n  " +
+			"\"version\": \"v1\",\n  " +
+			"\"err\": \"non-whitelisted license: fruitloops\",\n  " +
+			"\"license\": {\n   " +
+			"\"kind\": \"fruitloops\",\n   " +
+			"\"text\": \"\"\n  " +
+			"}\n },\n " +
+			"{\n  " +
+			"\"name\": \"2\",\n  " +
+			"\"version\": \"v2\",\n  " +
+			"\"err\": \"non-whitelisted license: cheerios\",\n  " +
+			"\"license\": {\n   " +
+			"\"kind\": \"cheerios\",\n   " +
+			"\"text\": \"\"\n  " +
+			"}\n },\n " +
+			"{\n  " +
+			"\"name\": \"3\",\n  " +
+			"\"version\": \"v3\",\n  " +
+			"\"err\": \"non-whitelisted license: cocoapuffs\",\n  " +
+			"\"license\": {\n   " +
+			"\"kind\": \"cocoapuffs\",\n   " +
+			"\"text\": \"\"\n  " +
+			"}\n }\n]"
 
 		err := a.Audit(AuditLocks)
 		assert.EqualError(t, err, auditErr)

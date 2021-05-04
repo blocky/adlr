@@ -41,18 +41,17 @@ func MakeLicenseLockFromRaw(
 }
 
 func (lock LicenseLock) Lock(
-	deps []Dependency,
+	locks []DependencyLock,
 ) error {
 	if lock.Exists() {
-		return lock.Overwrite(deps)
+		return lock.Overwrite(locks)
 	}
-	return lock.Create(deps)
+	return lock.Create(locks)
 }
 
 func (lock LicenseLock) Create(
-	deps []Dependency,
+	newLocks []DependencyLock,
 ) error {
-	newLocks := DepsToDepLockArray(deps)
 	finalLocks := lock.locker.LockNew(newLocks)
 
 	file, err := lock.OpenFileCreate()
@@ -64,7 +63,7 @@ func (lock LicenseLock) Create(
 }
 
 func (lock LicenseLock) Overwrite(
-	deps []Dependency,
+	newLocks []DependencyLock,
 ) error {
 	oldLocks, err := lock.Read()
 	if err != nil {
@@ -77,7 +76,7 @@ func (lock LicenseLock) Overwrite(
 	}
 	finalLocks := lock.locker.
 		LockNewWithOld(
-			DepsToDepLockMap(deps),
+			DepLocksToDepLockMap(newLocks),
 			DepLocksToDepLockMap(oldLocks),
 		)
 	return lock.WriteAndVetLocks(file, finalLocks)
