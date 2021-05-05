@@ -49,7 +49,6 @@ func (suite IntegrationTestSuite) TestADLR() {
 
 	// create a license.lock with dependency licenses
 	licenselock := adlr.MakeLicenseLock("./")
-	// err = licenselock.Lock(mined)
 	err = licenselock.Lock(locks)
 	defer os.Remove("./" + adlr.LicenseLockName)
 	suite.Nil(err)
