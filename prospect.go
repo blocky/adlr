@@ -2,6 +2,7 @@ package adlr
 
 import "github.com/blocky/adlr/gotool"
 
+// Prospects hold the data required to text mine a golang module
 type Prospect struct {
 	Name    string
 	Dir     string
@@ -9,6 +10,8 @@ type Prospect struct {
 	ErrStr  string
 }
 
+// Create a list of Prospect from a list of gotool.Module,
+// carrying-over all important data
 func MakeProspects(
 	modules ...gotool.Module,
 ) []Prospect {
@@ -23,6 +26,7 @@ func MakeProspects(
 	return prospects
 }
 
+// Create a Prospect
 func MakeProspect(
 	name string,
 	dir string,
@@ -35,6 +39,7 @@ func MakeProspect(
 	}
 }
 
+// Add error string
 func (p *Prospect) AddErrStr(
 	errStr string,
 ) {
