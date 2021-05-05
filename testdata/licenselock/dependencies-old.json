@@ -1,39 +1,31 @@
 [
   {
-    "module":{
-      "path":"alpha",
-      "version":"v-aa"
-    },
+    "name":"alpha",
+    "version":"v-aa",
     "license":{
       "kind":"kind-a",
       "text":"text-a"
     }
   },
   {
-    "module":{
-      "path":"bravo",
-      "version":"v-ba"
-    },
+    "name":"bravo",
+    "version":"v-ba",
     "license":{
       "kind":"kind-b",
       "text":"text-b"
     }
   },
   {
-    "module":{
-      "path":"charlie",
-      "version":"v-ca"
-    },
+    "name":"charlie",
+    "version":"v-ca",
     "license":{
       "kind":"kind-c",
       "text":"text-c"
     }
   },
   {
-    "module":{
-      "path":"delta",
-      "version":"v-da"
-    },
+    "name":"delta",
+    "version":"v-da",
     "license":{
       "kind":"kind-d",
       "text":"text-d"

@@ -151,8 +151,7 @@ func TestLicenseLockCreate(t *testing.T) {
 
 		h := LicenseLockHelper{t, path + "/license.lock"}
 		bytes := h.ReadFile("./testdata/licenselock/dependencies-old.json")
-		deps := h.UnmarshalDependencies(bytes)
-		expected := adlr.DepsToDepLockArray(deps)
+		deps := h.UnmarshalDependencyLocks(bytes)
 
 		err := lock.Create(deps)
 		defer h.CleanupLock()
@@ -161,7 +160,7 @@ func TestLicenseLockCreate(t *testing.T) {
 		result := h.UnmarshalDependencyLocks(bytes)
 
 		assert.Nil(t, err)
-		assert.Equal(t, expected, result)
+		assert.Equal(t, deps, result)
 	})
 	t.Run("errors on empty fields", func(t *testing.T) {
 		lockPath := os.TempDir() + "/license.lock"
@@ -177,8 +176,7 @@ func TestLicenseLockCreate(t *testing.T) {
 		lock := adlr.MakeLicenseLockFromRaw(locker, lockPath, printer, reader)
 
 		bytes := h.ReadFile("./testdata/licenselock/dependencies-new.json")
-		deps := h.UnmarshalDependencies(bytes)
-		expected := adlr.DepsToDepLockArray(deps)
+		deps := h.UnmarshalDependencyLocks(bytes)
 
 		err := lock.Create(deps)
 		defer h.CleanupLock()
@@ -190,7 +188,7 @@ func TestLicenseLockCreate(t *testing.T) {
 		stderrErr := string(bytes)
 
 		assert.Nil(t, err)
-		assert.Equal(t, expected, result)
+		assert.Equal(t, deps, result)
 		assert.Equal(t, newLocksVettingErr, stderrErr)
 	})
 }
@@ -209,7 +207,7 @@ func TestLicenseLockOverwrite(t *testing.T) {
 		file.Close()
 
 		bytes := h.ReadFile("./testdata/licenselock/dependencies-old.json")
-		newDeps := h.UnmarshalDependencies(bytes)
+		newDeps := h.UnmarshalDependencyLocks(bytes)
 		err := lock.Overwrite(newDeps)
 		assert.Nil(t, err)
 
@@ -232,7 +230,7 @@ func TestLicenseLockOverwrite(t *testing.T) {
 		oldMap := adlr.DepLocksToDepLockMap(oldLocks)
 
 		bytes = h.ReadFile("./testdata/licenselock/dependencies-new.json")
-		newDeps := h.UnmarshalDependencies(bytes)
+		newDeps := h.UnmarshalDependencyLocks(bytes)
 		err := lock.Overwrite(newDeps)
 		assert.Nil(t, err)
 
@@ -288,7 +286,7 @@ func TestLicenseLockOverwrite(t *testing.T) {
 		file.Close()
 
 		bytes := h.ReadFile("./testdata/licenselock/dependencies-new.json")
-		newDeps := h.UnmarshalDependencies(bytes)
+		newDeps := h.UnmarshalDependencyLocks(bytes)
 		err := lock.Overwrite(newDeps)
 		assert.Nil(t, err)
 

@@ -17,7 +17,7 @@ const (
 func (suite *IntegrationTestSuite) TestProspector() {
 	suite.T().Run("happy path", func(t *testing.T) {
 		p := adlr.MakeLicenseProspector()
-		r := p.ProspectLicense(ProspectorHappyPathDir)
+		r := p.ProspectLicenses(ProspectorHappyPathDir)[0]
 
 		assert.Equal(t, "", r.ErrStr)
 		assert.Equal(t, "MIT", r.Matches[0].License)
@@ -25,7 +25,7 @@ func (suite *IntegrationTestSuite) TestProspector() {
 	})
 	suite.T().Run("error on missing dir", func(t *testing.T) {
 		p := adlr.MakeLicenseProspector()
-		r := p.ProspectLicense(ProspectorMissingDir)
+		r := p.ProspectLicenses(ProspectorMissingDir)[0]
 		// error remains same regardless of internet connection
 		expected := "could not clone repo from " +
 			ProspectorMissingDir +
@@ -35,7 +35,7 @@ func (suite *IntegrationTestSuite) TestProspector() {
 	})
 	suite.T().Run("error on missing license file", func(t *testing.T) {
 		p := adlr.MakeLicenseProspector()
-		r := p.ProspectLicense(ProspectorMissingLicenseDir)
+		r := p.ProspectLicenses(ProspectorMissingLicenseDir)[0]
 
 		assert.Equal(t, "no license file was found", r.ErrStr)
 	})

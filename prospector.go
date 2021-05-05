@@ -9,27 +9,40 @@ func MakeLicenseProspector() LicenseProspector {
 }
 
 func (lp LicenseProspector) Prospect(
-	deps ...Dependency,
-) ([]Dependency, error) {
-	var prospectErrs []licensedb.Result
+	prospects ...Prospect,
+) ([]Mine, error) {
+	var prospectErrs []Prospect
 
-	for i, dep := range deps {
-		result := lp.ProspectLicense(dep.Module.Dir)
-		deps[i].AddResult(result)
+	var paths = make([]string, len(prospects))
+	for i, prospect := range prospects {
+		paths[i] = prospect.Dir
+	}
+	// compute results concurrently; stable algorithm
+	results := lp.ProspectLicenses(paths...)
+
+	var mined = make([]Mine, len(prospects))
+	for i, prospect := range prospects {
+		var result = results[i]
 
 		if result.ErrStr != "" { // could not find dir or license files
-			prospectErrs = append(prospectErrs, result)
+			prospect.AddErrStr(result.ErrStr)
+			prospectErrs = append(prospectErrs, prospect)
 		}
+		mined[i] = MakeMine(
+			prospect.Name,
+			prospect.Dir,
+			prospect.Version,
+			result.Matches,
+		)
 	}
 	if len(prospectErrs) != 0 {
-		return deps, &LicenseProspectingError{prospectErrs}
+		return mined, &LicenseProspectingError{prospectErrs}
 	}
-	return deps, nil
+	return mined, nil
 }
 
-func (lp LicenseProspector) ProspectLicense(
-	dir string,
-) licensedb.Result {
-	// always returns n=1 array on one arg
-	return licensedb.Analyse(dir)[0]
+func (lp LicenseProspector) ProspectLicenses(
+	paths ...string,
+) []licensedb.Result {
+	return licensedb.Analyse(paths...)
 }

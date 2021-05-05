@@ -11,25 +11,25 @@ import (
 
 var DependencyLocks = []adlr.DependencyLock{
 	adlr.DependencyLock{
-		"github.com/spf13/viper",
-		"v1.4.0",
-		adlr.License{
+		Name:    "github.com/spf13/viper",
+		Version: "v1.4.0",
+		License: adlr.License{
 			"MIT",
 			"MIT License",
 		},
 	},
 	adlr.DependencyLock{
-		"github.com/stretchr/testify",
-		"v1.6.1",
-		adlr.License{
+		Name:    "github.com/stretchr/testify",
+		Version: "v1.6.1",
+		License: adlr.License{
 			"MIT",
 			"MIT License",
 		},
 	},
 	adlr.DependencyLock{
-		"github.com/ybbus/jsonrpc",
-		"v2.1.2+incompatible",
-		adlr.License{
+		Name:    "github.com/ybbus/jsonrpc",
+		Version: "v2.1.2+incompatible",
+		License: adlr.License{
 			"MIT",
 			"MIT License",
 		},
@@ -43,6 +43,13 @@ func TestMakeDependencyLock(t *testing.T) {
 	assert.Equal(t, l, dl.License)
 	assert.Equal(t, "name", dl.Name)
 	assert.Equal(t, "version", dl.Version)
+}
+
+func TestDependencyLockAddErrStr(t *testing.T) {
+	var l adlr.DependencyLock
+	l.AddErrStr("error")
+
+	assert.Equal(t, "error", l.ErrStr)
 }
 
 func TestDepLocksToDepLocksMap(t *testing.T) {
