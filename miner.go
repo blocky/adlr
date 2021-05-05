@@ -9,19 +9,25 @@ import (
 	"github.com/blocky/adlr/reader"
 )
 
+// Minimum required confidence for a probable license from text mining
 const Confidence float32 = 0.85
+
+// Minimum confidence difference of primary from secondary license matches
 const Lead float32 = 0.07
 
+// Holds confidence values for a LicenseMiner
 type Minimums struct {
 	Confidence float32
 	Lead       float32
 }
 
+// LicenseMiner attempts to automatically determine Licenses for Mines
 type LicenseMiner struct {
 	minimum Minimums
 	reader  *reader.LimitedReader
 }
 
+// Create a LicenseMiner with default values
 func MakeLicenseMiner() LicenseMiner {
 	mins := Minimums{
 		Confidence: Confidence,
@@ -31,6 +37,7 @@ func MakeLicenseMiner() LicenseMiner {
 	return MakeLicenseMinerFromRaw(mins, reader)
 }
 
+// Create a LicenseMiner from specified values
 func MakeLicenseMinerFromRaw(
 	minimums Minimums,
 	reader *reader.LimitedReader,
@@ -38,6 +45,11 @@ func MakeLicenseMinerFromRaw(
 	return LicenseMiner{minimums, reader}
 }
 
+// Attempt to automatically derive a License for a Mine from
+// from the licensedb.Match(s) of a licensedb.Result from text mining
+// a golang module directory. Return a list of DependencyLock. Returned
+// error list can be printed for debugging, and are potentially recoverable
+// by LicenseLock
 func (lm LicenseMiner) Mine(
 	mines ...Mine,
 ) ([]DependencyLock, error) {
@@ -56,7 +68,6 @@ func (lm LicenseMiner) Mine(
 			mine.Version,
 			license,
 		)
-
 	}
 	if len(mineErrs) != 0 {
 		return locks, &LicenseMineError{mineErrs}
@@ -64,6 +75,8 @@ func (lm LicenseMiner) Mine(
 	return locks, nil
 }
 
+// Attempt to automatically determine a License from for a Mine using
+// its licensedb.Match(s)
 func (lm LicenseMiner) MineLicense(
 	mine Mine,
 ) (License, error) {
@@ -78,6 +91,7 @@ func (lm LicenseMiner) MineLicense(
 	return MakeLicense(match.License, text), nil
 }
 
+// Fetch license text from a golang module license file
 func (lm LicenseMiner) DetermineLicenseText(
 	path string,
 ) (string, error) {
@@ -88,6 +102,8 @@ func (lm LicenseMiner) DetermineLicenseText(
 	return string(bytes), nil
 }
 
+// Attempt to automatically determine the correct licensedb.Match
+// from a list
 func (lm LicenseMiner) DetermineMatch(
 	matches ...licensedb.Match,
 ) (licensedb.Match, error) {
@@ -111,6 +127,8 @@ func (lm LicenseMiner) DetermineMatch(
 	return m1, nil
 }
 
+// Determine if the singular licensedb.Match meets confidence
+// requirement
 func (lm LicenseMiner) DetermineSingleMatch(
 	m licensedb.Match,
 ) error {
@@ -121,6 +139,8 @@ func (lm LicenseMiner) DetermineSingleMatch(
 	return nil
 }
 
+// Determine if the primary licensedb.Match meets confidence
+// requirements to beat the secondary licensedb.Match
 func (lm LicenseMiner) DetermineMultipleMatch(
 	m1, m2 licensedb.Match,
 ) error {
@@ -135,6 +155,7 @@ func (lm LicenseMiner) DetermineMultipleMatch(
 	return nil
 }
 
+// Determine whether a probable license confidence meets minimum
 func (lm LicenseMiner) MeetsMinimumConfidence(
 	a float32,
 ) error {
@@ -145,6 +166,8 @@ func (lm LicenseMiner) MeetsMinimumConfidence(
 	return &MinConfidenceError{a, b}
 }
 
+// Deteremine if the difference of the primary and secondary license
+// confidences meets minimum
 func (lm LicenseMiner) MeetsMinimumLead(
 	a, b float32,
 ) error {

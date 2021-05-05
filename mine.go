@@ -2,6 +2,8 @@ package adlr
 
 import "github.com/go-enry/go-license-detector/v4/licensedb"
 
+// Mines hold the data required to attempt to automatically
+// determine a golang module's license
 type Mine struct {
 	Name    string
 	Dir     string
@@ -10,6 +12,7 @@ type Mine struct {
 	Matches []licensedb.Match
 }
 
+// Create a Mine
 func MakeMine(
 	name string,
 	dir string,
@@ -24,6 +27,7 @@ func MakeMine(
 	}
 }
 
+// Add an error string
 func (m *Mine) AddError(
 	err error,
 ) {
