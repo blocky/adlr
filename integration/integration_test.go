@@ -58,7 +58,6 @@ func (suite IntegrationTestSuite) TestADLR() {
 	locks, err = licenselock.Read()
 	suite.Nil(err)
 	auditor := adlr.MakeLicenseAuditor()
-	suite.Nil(err)
 	err = auditor.Audit(locks)
 	suite.Nil(err)
 }
