@@ -5,6 +5,8 @@ import (
 	"encoding/json"
 )
 
+// DependencyLock can be written directly to the license.lock file
+// when finalized
 type DependencyLock struct {
 	Name    string  `json:"name"`
 	Version string  `json:"version"`
@@ -12,6 +14,7 @@ type DependencyLock struct {
 	License License `json:"license"`
 }
 
+// Create a DependencyLock
 func MakeDependencyLock(
 	name, version string,
 	license License,
@@ -23,12 +26,14 @@ func MakeDependencyLock(
 	}
 }
 
+// Add error string
 func (lock *DependencyLock) AddErrStr(
 	errStr string,
 ) {
 	lock.ErrStr = errStr
 }
 
+// Mutate a DependencyLock array to a DependencyLock map
 func DepLocksToDepLockMap(
 	locks []DependencyLock,
 ) map[string]DependencyLock {
@@ -39,12 +44,14 @@ func DepLocksToDepLockMap(
 	return lockMap
 }
 
+// Marshal a list of DependencyLock
 func MarshalDependencyLocks(
 	locks []DependencyLock,
 ) ([]byte, error) {
 	return json.Marshal(locks)
 }
 
+// Unmarshal a list of DependencyLock
 func UnmarshalDependencyLocks(
 	bytes []byte,
 ) ([]DependencyLock, error) {
@@ -53,6 +60,8 @@ func UnmarshalDependencyLocks(
 	return locks, err
 }
 
+// Deserialzed a list of DependencyLocks after inclusion into
+// a variable from building with golang -ldflags
 func DeserializeLocks(
 	b []byte,
 ) ([]DependencyLock, error) {
@@ -60,6 +69,9 @@ func DeserializeLocks(
 	return UnmarshalDependencyLocks(b)
 }
 
+// Serialize a list of DependencyLocks for inclusion into a
+// variable from golang -ldflags. Golang buildflags require
+// no newlines or spaces
 func SerializeLocks(
 	locks []DependencyLock,
 ) ([]byte, error) {

@@ -7,8 +7,11 @@ import (
 	"github.com/blocky/prettyprinter"
 )
 
+// The filename for storing locked dependencies and their licenses
 const LicenseLockName = "license.lock"
 
+// LicenseLock is a file manager for locking dependencies and their
+// licenses into an edittable file to save in a project's vcs
 type LicenseLock struct {
 	locker  Locker
 	path    string
@@ -16,6 +19,8 @@ type LicenseLock struct {
 	reader  *reader.LimitedReader
 }
 
+// Create a LicenseLock with default values and providec directory
+// to manage the lock file
 func MakeLicenseLock(
 	dir string,
 ) LicenseLock {
@@ -26,6 +31,7 @@ func MakeLicenseLock(
 	return LicenseLock{locker, path, printer, reader}
 }
 
+// Create a LicenseLock from specified values
 func MakeLicenseLockFromRaw(
 	locker Locker,
 	path string,
@@ -40,6 +46,8 @@ func MakeLicenseLockFromRaw(
 	}
 }
 
+// Lock DependencyLocks derived by adlr of a project's golang
+// module dependencies into a lock file for vcs
 func (lock LicenseLock) Lock(
 	locks []DependencyLock,
 ) error {
@@ -49,6 +57,8 @@ func (lock LicenseLock) Lock(
 	return lock.Create(locks)
 }
 
+// Create a lock file when one does not exist. Manual edits may be
+// required
 func (lock LicenseLock) Create(
 	newLocks []DependencyLock,
 ) error {
@@ -62,6 +72,8 @@ func (lock LicenseLock) Create(
 	return lock.WriteAndVetLocks(file, finalLocks)
 }
 
+// Merge an existing lock file with new dependencies, giving new
+// and updated dependencies priority. Manual edits may be required
 func (lock LicenseLock) Overwrite(
 	newLocks []DependencyLock,
 ) error {
@@ -82,6 +94,7 @@ func (lock LicenseLock) Overwrite(
 	return lock.WriteAndVetLocks(file, finalLocks)
 }
 
+// Read and unmarshal an existing lock file into memory
 func (lock LicenseLock) Read() (
 	[]DependencyLock, error,
 ) {
@@ -97,6 +110,8 @@ func (lock LicenseLock) Read() (
 	return UnmarshalDependencyLocks(bytes)
 }
 
+// Vet finalized merge locks for missing fields unsolvable
+// by merging. Return an error for required manual edits
 func (lock LicenseLock) VetLocks(
 	locks []DependencyLock,
 ) error {
@@ -110,6 +125,8 @@ func (lock LicenseLock) VetLocks(
 	return nil
 }
 
+// Write locks to the lock file. Vet locks after writing for
+// missing fields that require manual edits
 func (lock LicenseLock) WriteAndVetLocks(
 	writer prettyprinter.Writer,
 	locks []DependencyLock,
@@ -122,6 +139,7 @@ func (lock LicenseLock) WriteAndVetLocks(
 	return lock.VetLocks(locks)
 }
 
+// Write locks to lock file
 func (lock LicenseLock) Write(
 	writer prettyprinter.Writer,
 	locks []DependencyLock,

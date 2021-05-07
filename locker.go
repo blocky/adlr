@@ -2,28 +2,38 @@ package adlr
 
 import "errors"
 
+// Message preface for missing License fields
 const (
 	ReqEditField = "required editting of license field: "
 )
 
+// DependencyLocker implements the Locker interface
 type Locker interface {
 	LockNew([]DependencyLock) []DependencyLock
 	LockNewWithOld(new, old map[string]DependencyLock) []DependencyLock
 	VetLocks([]DependencyLock) []LockerError
 }
 
+// DependencyLocker locks DependencyLocks. New locks with missing
+// fields are merged with old locks when applicable
 type DependencyLocker struct{}
 
+// Create a DependencyLocker
 func MakeDependencyLocker() DependencyLocker {
 	return DependencyLocker{}
 }
 
+// Lock new locks when no previous locks exist
 func (l DependencyLocker) LockNew(
 	new []DependencyLock,
 ) []DependencyLock {
 	return l.Alphabetize(new)
 }
 
+// Lock new locks with old. New locks take priority, and old
+// locks not existing in the new list are deleted. New locks
+// with missing License details are added from matching old
+// locks. Return an alphabetized list by lock name
 func (l DependencyLocker) LockNewWithOld(
 	new, old map[string]DependencyLock,
 ) []DependencyLock {
@@ -47,6 +57,7 @@ func (l DependencyLocker) LockNewWithOld(
 	return l.Alphabetize(final)
 }
 
+// Alphabetize locks by name using mergesort
 func (l DependencyLocker) Alphabetize(
 	locks []DependencyLock,
 ) []DependencyLock {
@@ -101,6 +112,8 @@ func merge(
 	return merged
 }
 
+// Vet finalized locks for missing License fields.
+// Return a list of LockerErrors for debugging printout
 func (l DependencyLocker) VetLocks(
 	final []DependencyLock,
 ) []LockerError {
@@ -119,6 +132,7 @@ func (l DependencyLocker) VetLocks(
 	return nil
 }
 
+// Vet locks for missing License fields
 func (l DependencyLocker) VetLock(
 	lock DependencyLock,
 ) *LockerError {

@@ -2,12 +2,19 @@ package adlr
 
 import "github.com/go-enry/go-license-detector/v4/licensedb"
 
+// Text mine Prospects and return licensedb.Results
 type LicenseProspector struct{}
 
+// Create a LicenseProspector
 func MakeLicenseProspector() LicenseProspector {
 	return LicenseProspector{}
 }
 
+// Concurrently text mine a list of Prospect, and generate a
+// a stable list of licensedb.Result. Return a stable list of Mine
+// with its respective list of licensedb.Match from text mining.
+// An error return occurs for missing directories or missing licenses,
+// and should be treated as non-recoverable
 func (lp LicenseProspector) Prospect(
 	prospects ...Prospect,
 ) ([]Mine, error) {
@@ -41,6 +48,7 @@ func (lp LicenseProspector) Prospect(
 	return mined, nil
 }
 
+// Concurrently text mine paths and return a stable list of licensedb.Result
 func (lp LicenseProspector) ProspectLicenses(
 	paths ...string,
 ) []licensedb.Result {
