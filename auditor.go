@@ -2,23 +2,31 @@ package adlr
 
 import "errors"
 
+// Message preface for a non-whitelisted license
 const NonWhitelistedLicenseErr = "non-whitelisted license: "
 
+// LicenseAuditor audits DependencyLocks for
+// license types not included in the whitelist
 type LicenseAuditor struct {
 	whitelist LicenseWhitelist
 }
 
+// Create a LicenseAuditor with default values
 func MakeLicenseAuditor() LicenseAuditor {
 	whitelist := MakeLicenseWhitelist()
 	return MakeLicenseAuditorFromRaw(whitelist)
 }
 
+// Create a LicenseAuditor from specified values
 func MakeLicenseAuditorFromRaw(
 	whitelist LicenseWhitelist,
 ) LicenseAuditor {
 	return LicenseAuditor{whitelist}
 }
 
+// Audit a list of DependencyLocks for license types not included
+// in the LicenseWhitelist. Return an error including a list of
+// non-whitelist-license DependencyLocks for error printout
 func (auditor LicenseAuditor) Audit(
 	locks []DependencyLock,
 ) error {
@@ -37,6 +45,7 @@ func (auditor LicenseAuditor) Audit(
 	return nil
 }
 
+// Audit a DependencyLock's license type against the LicenseWhitelist
 func (auditor LicenseAuditor) AuditLock(
 	lock DependencyLock,
 ) error {
