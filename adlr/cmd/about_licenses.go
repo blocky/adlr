@@ -44,17 +44,17 @@ var aboutLicensesCmd = &cobra.Command{
 }
 
 func init() {
-	depNameKey := "name"
-	namesOnlyKey := "names"
+	nameKey := "name"
+	namesKey := "names"
 
 	aboutLicenseCmd.Flags().StringVarP(
-		&DependencyName, depNameKey, "n", "", "List a specific dependency license",
+		&DependencyName, nameKey, "n", "", "List a specific dependency license",
 	)
 	aboutLicensesCmd.Flags().BoolVar(
-		&DependencyNamesOnly, namesOnlyKey, false, "List only dependency names",
+		&DependencyNamesOnly, namesKey, false, "List only dependency names",
 	)
 
-	aboutLicenseCmd.MarkFlagRequired(depNameKey)
+	aboutLicenseCmd.MarkFlagRequired(nameKey)
 
 	aboutCmd.AddCommand(aboutLicenseCmd)
 	aboutCmd.AddCommand(aboutLicensesCmd)
