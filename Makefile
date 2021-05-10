@@ -22,11 +22,9 @@ BUILDLIST=buildlist.json
 
 default: test
 
-clean: clean-tmp
+clean:
 	@rm -rf $(BUILDLIST)
-
-clean-tmp:
-	@rm -rf $(BIN)/tmp
+	@rm -rf $(BIN)
 
 mock: # autogenerate mocks for interface testing
 	@$(MOCK) --all --output=./$(MOCKS)
@@ -35,7 +33,7 @@ mock: # autogenerate mocks for interface testing
 bin:
 	@mkdir $(BIN)
 
-build: build-linux-amd64 clean-tmp
+build: build-linux-amd64
 
 build-tmp: bin # build tmp exec to perform adlr steps
 	@$(GOBUILD) -o $(BIN)/tmp ./$(ADLR_SRC)
