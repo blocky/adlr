@@ -3,7 +3,9 @@
 
 [![Build Status](https://www.travis-ci.com/blocky/adlr.svg?token=JczzdP6eMqmEqysZ8pDf&branch=main)](https://www.travis-ci.com/blocky/adlr)
 
-ADLR is a project that attempts to automate fulfillment of golang module dependency license requirements.
+ADLR is a project that attempts to automate fulfillment of golang module dependency license requirements in a lock file suitable for vcs.
+
+For our dependencies and their licenses, see [license.lock](license.lock)
 
 # Disclaimer
 **The ADLR project offers no legal advice or license compliance guarantee. It is your responsibility to ensure compliance with licenses you interact with**
