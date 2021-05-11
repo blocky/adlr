@@ -11,11 +11,18 @@ For our dependencies and their licenses, see [license.lock](license.lock)
 **The ADLR project offers no legal advice or license compliance guarantee. It is your responsibility to ensure compliance with licenses you interact with**
 
 # Overview
-## License Lock
-ADLR creates a license lock file. This is a readable and manually edittable json file of your directly imported golang dependencies and their licenses. It is much like a `go.mod`, and you can save this file in your version control system to help monitor imports and their licenses.
+## ADLR's License Lock
+ADLR creates a license lock file. This is a readable and manually edittable json file of your directly imported golang dependencies and their licenses. It is much like a `go.mod`, and you can save this file in your version control system. Some benefits of this:
++ monitor imports' licenses
++ include your dependency licenses in your distributable
 
-## Distributable Inclusion
-Serialize the contents of the license lock file and include it in your distributable for a license information command. Serialize the lock file, save it in a golang variable with the golang `-ldflags` flag, and deserialize for printout. An example of this is built in to the repo. See `Makefile`, `sh/build.sh`, and the `cmd/` folder for details. Or test out ADLR's `about license(s)` commands with `make build`.
+## ADLR and Distributables
+Include your license lock file contents in your distributable for an easy license information command
+1. Serialize the lock file
+2. Pass to a variable in your code with the `-ldflags` build flag
+3. Deserialize for license information command(s)
+
+An example of this is built in to the repo. See `Makefile`, `sh/build.sh`, and the `cmd/` folder for details. Or test out ADLR's `about license(s)` commands with `make build`.
 
 # ADLR Process
 ## Your Golang Module buildlist
@@ -26,6 +33,10 @@ $ go list -m -json all > buildlist.json
 you can generate a json list of all golang modules/projects required to build your module.
 If your project is complex this list can be long. Luckily, ADLR filters out only your directly imported modules.
 ```golang
+buildlist, err := os.Open("./buildlist.json")
+...
+defer buildlist.Close()
+
 parser := gotool.MakeBuildListParser()
 mods, err := parser.ParseModuleList(buildlist)
 ...
