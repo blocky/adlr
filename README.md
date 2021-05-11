@@ -1,7 +1,9 @@
 # A.D.L.R.
 ### **A**utomating **D**ependency **L**icense **R**equirements
 
+[![GoDoc](https://godoc.org/github.com/blocky/adlr?status.svg)](https://godoc.org/github.com/blocky/adlr)
 [![Build Status](https://www.travis-ci.com/blocky/adlr.svg?token=JczzdP6eMqmEqysZ8pDf&branch=main)](https://www.travis-ci.com/blocky/adlr)
+[![Go Report Card](https://goreportcard.com/badge/github.com/blocky/adlr)](https://goreportcard.com/report/github.com/blocky/adlr)
 
 ADLR is a project that attempts to automate fulfillment of golang module dependency license requirements in a lock file suitable for vcs.
 
