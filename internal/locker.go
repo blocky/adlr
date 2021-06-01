@@ -9,9 +9,9 @@ const (
 
 // DependencyLocker implements the Locker interface
 type Locker interface {
-	LockNew([]DependencyLock) []DependencyLock
+	LockNew(...DependencyLock) []DependencyLock
 	LockNewWithOld(new, old map[string]DependencyLock) []DependencyLock
-	VetLocks([]DependencyLock) []LockerError
+	VetLocks(...DependencyLock) []LockerError
 }
 
 // DependencyLocker locks DependencyLocks. New locks with missing
@@ -25,7 +25,7 @@ func MakeDependencyLocker() DependencyLocker {
 
 // Lock new locks when no previous locks exist
 func (l DependencyLocker) LockNew(
-	new []DependencyLock,
+	new ...DependencyLock,
 ) []DependencyLock {
 	return l.Alphabetize(new)
 }
@@ -115,7 +115,7 @@ func merge(
 // Vet finalized locks for missing License fields.
 // Return a list of LockerErrors for debugging printout
 func (l DependencyLocker) VetLocks(
-	final []DependencyLock,
+	final ...DependencyLock,
 ) []LockerError {
 	// check finalized locks for fields requiring edits
 	var lockErrs []LockerError

@@ -63,14 +63,14 @@ func Evaluate(buildlist *os.File) {
 	}
 
 	licenselock := api.MakeLicenseLockManager(ModuleDir)
-	err = licenselock.Lock(locks)
+	err = licenselock.Lock(locks...)
 	ExitOnErr(err)
 
 	locks, err = licenselock.Read()
 	ExitOnErr(err)
 
 	auditor := api.MakeAuditor()
-	err = auditor.Audit(locks)
+	err = auditor.Audit(locks...)
 	ExitOnErr(err)
 }
 

@@ -13,12 +13,18 @@ type Locker struct {
 }
 
 // LockNew provides a mock function with given fields: _a0
-func (_m *Locker) LockNew(_a0 []internal.DependencyLock) []internal.DependencyLock {
-	ret := _m.Called(_a0)
+func (_m *Locker) LockNew(_a0 ...internal.DependencyLock) []internal.DependencyLock {
+	_va := make([]interface{}, len(_a0))
+	for _i := range _a0 {
+		_va[_i] = _a0[_i]
+	}
+	var _ca []interface{}
+	_ca = append(_ca, _va...)
+	ret := _m.Called(_ca...)
 
 	var r0 []internal.DependencyLock
-	if rf, ok := ret.Get(0).(func([]internal.DependencyLock) []internal.DependencyLock); ok {
-		r0 = rf(_a0)
+	if rf, ok := ret.Get(0).(func(...internal.DependencyLock) []internal.DependencyLock); ok {
+		r0 = rf(_a0...)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]internal.DependencyLock)
@@ -45,12 +51,18 @@ func (_m *Locker) LockNewWithOld(new map[string]internal.DependencyLock, old map
 }
 
 // VetLocks provides a mock function with given fields: _a0
-func (_m *Locker) VetLocks(_a0 []internal.DependencyLock) []internal.LockerError {
-	ret := _m.Called(_a0)
+func (_m *Locker) VetLocks(_a0 ...internal.DependencyLock) []internal.LockerError {
+	_va := make([]interface{}, len(_a0))
+	for _i := range _a0 {
+		_va[_i] = _a0[_i]
+	}
+	var _ca []interface{}
+	_ca = append(_ca, _va...)
+	ret := _m.Called(_ca...)
 
 	var r0 []internal.LockerError
-	if rf, ok := ret.Get(0).(func([]internal.DependencyLock) []internal.LockerError); ok {
-		r0 = rf(_a0)
+	if rf, ok := ret.Get(0).(func(...internal.DependencyLock) []internal.LockerError); ok {
+		r0 = rf(_a0...)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]internal.LockerError)

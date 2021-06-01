@@ -24,10 +24,13 @@ clean:
 	@rm -rf $(BUILDLIST)
 	@rm -rf $(BIN)
 
-mock: # autogenerate mocks for interface testing
-	@$(MOCK) \
-	-dir=./internal,./reader,./gotool \
-	--all --output=./$(MOCKS)
+mock: mock-internal mock-reader # autogenerate mocks for interface testing
+
+mock-internal:
+	@$(MOCK) --dir=./internal --all --output=./$(MOCKS)
+
+mock-reader:
+	@$(MOCK) --dir=./reader --all --output=./$(MOCKS)
 
 # building
 bin:

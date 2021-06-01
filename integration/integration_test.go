@@ -49,7 +49,7 @@ func (suite IntegrationTestSuite) TestADLR() {
 
 	// create a license.lock with dependency licenses
 	licenselock := internal.MakeLicenseLock("./")
-	err = licenselock.Lock(locks)
+	err = licenselock.Lock(locks...)
 	defer os.Remove("./" + internal.LicenseLockName)
 	suite.Nil(err)
 
@@ -58,6 +58,6 @@ func (suite IntegrationTestSuite) TestADLR() {
 	locks, err = licenselock.Read()
 	suite.Nil(err)
 	auditor := internal.MakeLicenseAuditor()
-	err = auditor.Audit(locks)
+	err = auditor.Audit(locks...)
 	suite.Nil(err)
 }

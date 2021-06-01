@@ -28,7 +28,7 @@ func MakeLicenseAuditorFromRaw(
 // in the LicenseWhitelist. Return an error including a list of
 // non-whitelist-license DependencyLocks for error printout
 func (auditor LicenseAuditor) Audit(
-	locks []DependencyLock,
+	locks ...DependencyLock,
 ) error {
 	var auditErrs []DependencyLock
 

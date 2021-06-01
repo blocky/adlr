@@ -75,7 +75,7 @@ func TestLicenseAuditorAudit(t *testing.T) {
 		w := internal.MakeLicenseWhitelistFromRaw(cerealList)
 		a := internal.MakeLicenseAuditorFromRaw(w)
 
-		err := a.Audit(AuditLocks)
+		err := a.Audit(AuditLocks...)
 		assert.Nil(t, err)
 	})
 	t.Run("error on non-whitelisted licenses", func(t *testing.T) {
@@ -107,7 +107,7 @@ func TestLicenseAuditorAudit(t *testing.T) {
 			"\"text\": \"\"\n  " +
 			"}\n }\n]"
 
-		err := a.Audit(AuditLocks)
+		err := a.Audit(AuditLocks...)
 		assert.EqualError(t, err, auditErr)
 	})
 }

@@ -49,33 +49,33 @@ func MakeLicenseLockFromRaw(
 // Lock DependencyLocks derived by adlr of a project's golang
 // module dependencies into a lock file for vcs
 func (lock LicenseLock) Lock(
-	locks []DependencyLock,
+	locks ...DependencyLock,
 ) error {
 	if lock.Exists() {
-		return lock.Overwrite(locks)
+		return lock.Overwrite(locks...)
 	}
-	return lock.Create(locks)
+	return lock.Create(locks...)
 }
 
 // Create a lock file when one does not exist. Manual edits may be
 // required
 func (lock LicenseLock) Create(
-	newLocks []DependencyLock,
+	newLocks ...DependencyLock,
 ) error {
-	finalLocks := lock.locker.LockNew(newLocks)
+	finalLocks := lock.locker.LockNew(newLocks...)
 
 	file, err := lock.OpenFileCreate()
 	defer file.Close()
 	if err != nil {
 		return err
 	}
-	return lock.WriteAndVetLocks(file, finalLocks)
+	return lock.WriteAndVetLocks(file, finalLocks...)
 }
 
 // Merge an existing lock file with new dependencies, giving new
 // and updated dependencies priority. Manual edits may be required
 func (lock LicenseLock) Overwrite(
-	newLocks []DependencyLock,
+	newLocks ...DependencyLock,
 ) error {
 	oldLocks, err := lock.Read()
 	if err != nil {
@@ -91,7 +91,7 @@ func (lock LicenseLock) Overwrite(
 			DepLocksToDepLockMap(newLocks),
 			DepLocksToDepLockMap(oldLocks),
 		)
-	return lock.WriteAndVetLocks(file, finalLocks)
+	return lock.WriteAndVetLocks(file, finalLocks...)
 }
 
 // Read and unmarshal an existing lock file into memory
@@ -113,9 +113,9 @@ func (lock LicenseLock) Read() (
 // Vet finalized merge locks for missing fields unsolvable
 // by merging. Return an error for required manual edits
 func (lock LicenseLock) VetLocks(
-	locks []DependencyLock,
+	locks ...DependencyLock,
 ) error {
-	lockErrs := lock.locker.VetLocks(locks)
+	lockErrs := lock.locker.VetLocks(locks...)
 	if len(lockErrs) != 0 {
 		return lock.printer.
 			Add(lockErrs).
@@ -129,20 +129,20 @@ func (lock LicenseLock) VetLocks(
 // missing fields that require manual edits
 func (lock LicenseLock) WriteAndVetLocks(
 	writer prettyprinter.Writer,
-	locks []DependencyLock,
+	locks ...DependencyLock,
 ) error {
-	err := lock.Write(writer, locks)
+	err := lock.Write(writer, locks...)
 	if err != nil {
 		return err
 	}
 	// vet locks after write in case write fails
-	return lock.VetLocks(locks)
+	return lock.VetLocks(locks...)
 }
 
 // Write locks to lock file
 func (lock LicenseLock) Write(
 	writer prettyprinter.Writer,
-	locks []DependencyLock,
+	locks ...DependencyLock,
 ) error {
 	return lock.printer.
 		Add(locks).

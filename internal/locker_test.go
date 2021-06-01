@@ -89,7 +89,7 @@ func makeLockerErr(
 func TestDependencyLockerLockNew(t *testing.T) {
 	t.Run("happy path", func(t *testing.T) {
 		locker := internal.MakeDependencyLocker()
-		locks := locker.LockNew(newLockArray)
+		locks := locker.LockNew(newLockArray...)
 
 		assert.Equal(t, newLockArray, locks)
 	})
@@ -187,7 +187,7 @@ func TestDependencyLockerVetLocks(t *testing.T) {
 	t.Run("happy path", func(t *testing.T) {
 		final := oldLockArray
 		locker := internal.MakeDependencyLocker()
-		err := locker.VetLocks(final)
+		err := locker.VetLocks(final...)
 		assert.Nil(t, err)
 	})
 	t.Run("error on bad lock", func(t *testing.T) {
@@ -197,7 +197,7 @@ func TestDependencyLockerVetLocks(t *testing.T) {
 		lockErrs := []internal.LockerError{lockErr}
 
 		locker := internal.MakeDependencyLocker()
-		err := locker.VetLocks(final)
+		err := locker.VetLocks(final...)
 
 		assert.Equal(t, lockErrs, err)
 	})
