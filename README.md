@@ -93,7 +93,8 @@ err = licenselock.Lock(locks...)
 locks, err = licenselock.Read()
 ...
 
-auditor := api.MakeAuditor()
+whitelist := api.MakeWhitelist([]string{"A","B","C"...})
+auditor := api.MakeAuditor(whitelist)
 err = auditor.Audit(locks...)
 ...
 ```
