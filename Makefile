@@ -43,8 +43,7 @@ build-tmp: bin # build tmp exec to perform adlr steps
 
 build-linux-amd64: licenselock
 	@$(SCRIPTS)/build.sh \
-	adlr linux amd64 \
-	. ./$(BIN) ./$(LICENSELOCK)
+	adlr linux amd64 . ./$(BIN)
 
 buildlist:
 	@$(GOLIST) -m -json all > $(BUILDLIST)
