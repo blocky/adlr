@@ -1,6 +1,6 @@
 package main
 
-import "github.com/blocky/adlr/adlr/cmd"
+import "github.com/blocky/adlr/cmd"
 
 var DependencyRequirements = ""
 

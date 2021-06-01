@@ -15,8 +15,6 @@ MOCKS=internal/mocks
 BIN=bin
 SCRIPTS=sh
 
-ADLR_SRC=adlr
-
 LICENSELOCK=license.lock
 BUILDLIST=buildlist.json
 
@@ -38,13 +36,12 @@ bin:
 build: build-linux-amd64
 
 build-tmp: bin # build tmp exec to perform adlr steps
-	@$(GOBUILD) -o $(BIN)/tmp ./$(ADLR_SRC)
+	@$(GOBUILD) -o $(BIN)/tmp .
 
 build-linux-amd64: licenselock
 	@$(SCRIPTS)/build.sh \
 	adlr linux amd64 \
-	./$(ADLR_SRC) ./$(BIN) \
-	./$(LICENSELOCK)
+	. ./$(BIN) ./$(LICENSELOCK)
 
 buildlist:
 	@$(GOLIST) -m -json all > $(BUILDLIST)
