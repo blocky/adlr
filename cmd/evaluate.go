@@ -59,7 +59,7 @@ func Evaluate(buildlist *os.File) {
 	miner := api.MakeMiner()
 	locks, err := miner.Mine(mines...)
 	if Verbose && err != nil {
-		PrintStderr(err.Error())
+		PrintStderr(err)
 	}
 
 	licenselock := api.MakeLicenseLockManager(ModuleDir)
@@ -75,11 +75,12 @@ func Evaluate(buildlist *os.File) {
 }
 
 func PrintStderr(
-	errStr string,
+	err error,
 ) {
+	kve := prettyprinter.MakeKeyValueError(err)
 	p := prettyprinter.NewPrettyPrinter()
-	err := p.
-		Add(errStr).
+	err = p.
+		Add(kve).
 		StderrDump().
 		StderrDumpOnError()
 	ExitOnErr(err)
