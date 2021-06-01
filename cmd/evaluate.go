@@ -69,7 +69,8 @@ func Evaluate(buildlist *os.File) {
 	locks, err = licenselock.Read()
 	ExitOnErr(err)
 
-	auditor := api.MakeAuditor()
+	whitelist := api.MakeWhitelist(api.DefaultWhitelist) //https://github.com/blocky/adlr/issues/23
+	auditor := api.MakeAuditor(whitelist)
 	err = auditor.Audit(locks...)
 	ExitOnErr(err)
 }

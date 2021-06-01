@@ -10,13 +10,8 @@ type Auditor interface {
 }
 
 // MakeAuditor creates a default Auditor with a default Whitelist
-func MakeAuditor() Auditor {
-	return internal.MakeLicenseAuditor()
-}
-
-// MakeAuditorFromRaw creates an Auditor with specified Whitelist
-func MakeAuditorFromRaw(
+func MakeAuditor(
 	whitelist Whitelist,
 ) Auditor {
-	return internal.MakeLicenseAuditorFromRaw(whitelist)
+	return internal.MakeLicenseAuditor(whitelist)
 }

@@ -16,13 +16,13 @@ var fruitlist = []string{
 
 func TestLicenseWhitelist(t *testing.T) {
 	t.Run("happy path", func(t *testing.T) {
-		w := internal.MakeLicenseWhitelistFromRaw(fruitlist)
+		w := internal.MakeLicenseWhitelist(fruitlist)
 		assert.True(t, w.Find("apricot"))
 		assert.True(t, w.Find("blueberry"))
 		assert.True(t, w.Find("cherry"))
 	})
 	t.Run("false on not exist", func(t *testing.T) {
-		w := internal.MakeLicenseWhitelistFromRaw(fruitlist)
+		w := internal.MakeLicenseWhitelist(fruitlist)
 		assert.False(t, w.Find("apple"), "before first item")
 		assert.False(t, w.Find("avocado"), "after first item")
 		assert.False(t, w.Find("banana"), "before second item")
@@ -31,7 +31,7 @@ func TestLicenseWhitelist(t *testing.T) {
 		assert.False(t, w.Find("cucumber"), "after third item")
 	})
 	t.Run("false on empty list", func(t *testing.T) {
-		w := internal.MakeLicenseWhitelistFromRaw([]string{})
+		w := internal.MakeLicenseWhitelist([]string{})
 		assert.False(t, w.Find("unicorn"))
 	})
 }

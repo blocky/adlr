@@ -6,8 +6,8 @@ import (
 
 	"github.com/stretchr/testify/suite"
 
+	"github.com/blocky/adlr/api"
 	"github.com/blocky/adlr/gotool"
-	"github.com/blocky/adlr/internal"
 )
 
 type IntegrationTestSuite struct {
@@ -28,36 +28,30 @@ func (suite IntegrationTestSuite) TestADLR() {
 	}
 	defer buildlist.Close()
 
-	// unmarshal adlr's golang buildlist into modules
 	parser := gotool.MakeBuildListParser()
 	mods, err := parser.ParseModuleList(buildlist)
 	suite.Nil(err)
 
-	// filter out non-direct modules from the buildlist
 	direct := gotool.FilterDirectImportModules(mods)
-	prospects := internal.MakeProspects(direct...)
+	prospects := api.MakeProspects(direct...)
 
-	// using the paths of the modules, find their licenses
-	prospector := internal.MakeLicenseProspector()
+	prospector := api.MakeProspector()
 	mines, err := prospector.Prospect(prospects...)
 	suite.Nil(err)
 
-	// determine (best guess) module license specifics
-	miner := internal.MakeLicenseMiner()
+	miner := api.MakeMiner()
 	locks, err := miner.Mine(mines...)
-	suite.Nil(err)
 
-	// create a license.lock with dependency licenses
-	licenselock := internal.MakeLicenseLock("./")
+	licenselock := api.MakeLicenseLockManager("./")
 	err = licenselock.Lock(locks...)
-	defer os.Remove("./" + internal.LicenseLockName)
+	defer os.Remove("./" + "license.lock")
 	suite.Nil(err)
 
-	// vet license types with whitelist to ensure license
-	// requirement fulfillment
 	locks, err = licenselock.Read()
 	suite.Nil(err)
-	auditor := internal.MakeLicenseAuditor()
+
+	whitelist := api.MakeWhitelist(api.DefaultWhitelist)
+	auditor := api.MakeAuditor(whitelist)
 	err = auditor.Audit(locks...)
 	suite.Nil(err)
 }

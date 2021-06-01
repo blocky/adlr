@@ -40,8 +40,8 @@ var AuditLocks = []internal.DependencyLock{
 
 func TestLicenseAuditorAuditLock(t *testing.T) {
 	t.Run("happy path", func(t *testing.T) {
-		w := internal.MakeLicenseWhitelistFromRaw(cerealList)
-		a := internal.MakeLicenseAuditorFromRaw(w)
+		w := internal.MakeLicenseWhitelist(cerealList)
+		a := internal.MakeLicenseAuditor(w)
 
 		err := a.AuditLock(AuditLocks[0])
 		assert.Nil(t, err)
@@ -53,8 +53,8 @@ func TestLicenseAuditorAuditLock(t *testing.T) {
 		assert.Nil(t, err)
 	})
 	t.Run("error on non-whitelist license", func(t *testing.T) {
-		w := internal.MakeLicenseWhitelistFromRaw([]string{"unicorn"})
-		a := internal.MakeLicenseAuditorFromRaw(w)
+		w := internal.MakeLicenseWhitelist([]string{"unicorn"})
+		a := internal.MakeLicenseAuditor(w)
 
 		lock := AuditLocks[0]
 		err := a.AuditLock(lock)
@@ -72,15 +72,15 @@ func TestLicenseAuditorAuditLock(t *testing.T) {
 
 func TestLicenseAuditorAudit(t *testing.T) {
 	t.Run("happy path", func(t *testing.T) {
-		w := internal.MakeLicenseWhitelistFromRaw(cerealList)
-		a := internal.MakeLicenseAuditorFromRaw(w)
+		w := internal.MakeLicenseWhitelist(cerealList)
+		a := internal.MakeLicenseAuditor(w)
 
 		err := a.Audit(AuditLocks...)
 		assert.Nil(t, err)
 	})
 	t.Run("error on non-whitelisted licenses", func(t *testing.T) {
-		w := internal.MakeLicenseWhitelistFromRaw([]string{"unicorn"})
-		a := internal.MakeLicenseAuditorFromRaw(w)
+		w := internal.MakeLicenseWhitelist([]string{"unicorn"})
+		a := internal.MakeLicenseAuditor(w)
 		auditErr := "detected non-whitelisted licenses. Remove or Whitelist: [\n " +
 			"{\n  " +
 			"\"name\": \"1\",\n  " +

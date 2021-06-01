@@ -11,14 +11,8 @@ type LicenseAuditor struct {
 	whitelist Whitelist
 }
 
-// Create a LicenseAuditor with default values
-func MakeLicenseAuditor() LicenseAuditor {
-	whitelist := MakeLicenseWhitelist()
-	return MakeLicenseAuditorFromRaw(whitelist)
-}
-
-// Create a LicenseAuditor from specified values
-func MakeLicenseAuditorFromRaw(
+// Create a LicenseAuditor from specified Whitelist
+func MakeLicenseAuditor(
 	whitelist Whitelist,
 ) LicenseAuditor {
 	return LicenseAuditor{whitelist}

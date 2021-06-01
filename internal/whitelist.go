@@ -2,22 +2,6 @@ package internal
 
 import "sort"
 
-// This list is of SPDX License Identifiers, the standard
-// used by the text-mining package:
-// github.com/go-enry/go-license-detector/v4
-// and contains licenses deemed automatically fulfillable.
-// To add to this list, see:
-// https://spdx.org/licenses/
-// for license identifiers
-var DefaultWhitelist = []string{
-	"Apache-2.0",
-	"BSD-1-Clause",
-	"BSD-2-Clause",
-	"BSD-3-Clause",
-	"MIT",
-	"MIT-0",
-}
-
 type Whitelist interface {
 	Find(string) bool
 }
@@ -29,18 +13,12 @@ type LicenseWhitelist struct {
 	init      bool
 }
 
-// Create a LicenseWhitelist with default values
-func MakeLicenseWhitelist() Whitelist {
-	return MakeLicenseWhitelistFromRaw(DefaultWhitelist)
-}
-
-// Create a LicenseWhitelist from specified values.
-// Initialize whitelist for searching
-func MakeLicenseWhitelistFromRaw(
-	whitelist []string,
+// Create a LicenseWhitelist with a list of licenses
+func MakeLicenseWhitelist(
+	licenses []string,
 ) Whitelist {
-	init := preprocess(whitelist)
-	return LicenseWhitelist{whitelist, init}
+	init := preprocess(licenses)
+	return LicenseWhitelist{licenses, init}
 }
 
 // Search a whitelist of license types that a license exists
