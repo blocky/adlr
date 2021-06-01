@@ -5,7 +5,7 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/blocky/adlr"
+	"github.com/blocky/adlr/api"
 	"github.com/blocky/adlr/gotool"
 	"github.com/blocky/prettyprinter"
 )
@@ -50,25 +50,26 @@ func Evaluate(buildlist *os.File) {
 	ExitOnErr(err)
 
 	direct := gotool.FilterDirectImportModules(mods)
-	prospects := adlr.MakeProspects(direct...)
+	prospects := api.MakeProspects(direct...)
 
-	prospector := adlr.MakeLicenseProspector()
+	prospector := api.MakeProspector()
 	mines, err := prospector.Prospect(prospects...)
 	ExitOnErr(err)
 
-	miner := adlr.MakeLicenseMiner()
+	miner := api.MakeMiner()
 	locks, err := miner.Mine(mines...)
 	if Verbose && err != nil {
 		PrintStderr(err.Error())
 	}
 
-	licenselock := adlr.MakeLicenseLock(ModuleDir)
+	licenselock := api.MakeLicenseLockManager(ModuleDir)
 	err = licenselock.Lock(locks)
 	ExitOnErr(err)
 
 	locks, err = licenselock.Read()
 	ExitOnErr(err)
-	auditor := adlr.MakeLicenseAuditor()
+
+	auditor := api.MakeAuditor()
 	err = auditor.Audit(locks)
 	ExitOnErr(err)
 }

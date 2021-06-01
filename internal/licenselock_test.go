@@ -1,4 +1,4 @@
-package adlr_test
+package internal_test
 
 import (
 	"os"
@@ -6,7 +6,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/blocky/adlr"
+	"github.com/blocky/adlr/internal"
 	"github.com/blocky/adlr/internal/mocks"
 	"github.com/blocky/adlr/reader"
 	"github.com/blocky/prettyprinter"
@@ -55,13 +55,13 @@ func TestLicenseLockExists(t *testing.T) {
 	t.Run("false on lock file not exist", func(t *testing.T) {
 		path := "./testdata/licenselock/unicorn.lock"
 		locker, _, printer, reader := initLicenseLockMocks()
-		lock := adlr.MakeLicenseLockFromRaw(locker, path, printer, reader)
+		lock := internal.MakeLicenseLockFromRaw(locker, path, printer, reader)
 		assert.False(t, lock.Exists())
 	})
 	t.Run("true on lock file exist", func(t *testing.T) {
 		path := "./testdata/licenselock/old.lock"
 		locker, _, printer, reader := initLicenseLockMocks()
-		lock := adlr.MakeLicenseLockFromRaw(locker, path, printer, reader)
+		lock := internal.MakeLicenseLockFromRaw(locker, path, printer, reader)
 		assert.True(t, lock.Exists())
 	})
 }
@@ -70,7 +70,7 @@ func TestLicenseLockRead(t *testing.T) {
 	t.Run("happy path", func(t *testing.T) {
 		path := "./testdata/licenselock/old.lock"
 		locker, _, printer, reader := initLicenseLockMocks()
-		lock := adlr.MakeLicenseLockFromRaw(locker, path, printer, reader)
+		lock := internal.MakeLicenseLockFromRaw(locker, path, printer, reader)
 
 		h := LicenseLockHelper{t, path}
 		bytes := h.ReadFile("./testdata/licenselock/old.lock")
@@ -82,7 +82,7 @@ func TestLicenseLockRead(t *testing.T) {
 	})
 	t.Run("error on bad lock json", func(t *testing.T) {
 		locker, path, printer, reader := initLicenseLockMocks()
-		lock := adlr.MakeLicenseLockFromRaw(locker, path, printer, reader)
+		lock := internal.MakeLicenseLockFromRaw(locker, path, printer, reader)
 
 		h := LicenseLockHelper{t, path}
 		file := h.InitLock()
@@ -90,7 +90,7 @@ func TestLicenseLockRead(t *testing.T) {
 
 		h.WriteFile(file, []byte(`{"bad":"data"}`))
 		file.Close()
-		jsonErr := "json: cannot unmarshal object into Go value of type []adlr.DependencyLock"
+		jsonErr := "json: cannot unmarshal object into Go value of type []internal.DependencyLock"
 
 		_, err := lock.Read()
 		assert.EqualError(t, err, jsonErr)
@@ -100,7 +100,7 @@ func TestLicenseLockRead(t *testing.T) {
 func TestLicenseLockWriteAndVetLocks(t *testing.T) {
 	t.Run("happy path", func(t *testing.T) {
 		locker, path, printer, reader := initLicenseLockMocks()
-		lock := adlr.MakeLicenseLockFromRaw(locker, path, printer, reader)
+		lock := internal.MakeLicenseLockFromRaw(locker, path, printer, reader)
 		h := LicenseLockHelper{t, "./testdata/licenselock/old.lock"}
 		bytes := h.ReadLock()
 		locks := h.UnmarshalDependencyLocks(bytes)
@@ -119,7 +119,7 @@ func TestLicenseLockWriteAndVetLocks(t *testing.T) {
 	})
 	t.Run("error vetting locks", func(t *testing.T) {
 		locker, path, printer, reader := initLicenseLockMocks()
-		lock := adlr.MakeLicenseLockFromRaw(locker, path, printer, reader)
+		lock := internal.MakeLicenseLockFromRaw(locker, path, printer, reader)
 		h := LicenseLockHelper{t, "./testdata/licenselock/old.lock"}
 		bytes := h.ReadLock()
 		locks := h.UnmarshalDependencyLocks(bytes)
@@ -130,7 +130,7 @@ func TestLicenseLockWriteAndVetLocks(t *testing.T) {
 			On("Dump", file).Return(printer).
 			On("Error").Return(nil)
 
-		lockErrs := make([]adlr.LockerError, 1)
+		lockErrs := make([]internal.LockerError, 1)
 		locker.
 			On("VetLocks", locks).Return(lockErrs)
 		printer.
@@ -147,7 +147,7 @@ func TestLicenseLockWriteAndVetLocks(t *testing.T) {
 func TestLicenseLockCreate(t *testing.T) {
 	t.Run("happy path", func(t *testing.T) {
 		path := os.TempDir()
-		lock := adlr.MakeLicenseLock(path)
+		lock := internal.MakeLicenseLock(path)
 
 		h := LicenseLockHelper{t, path + "/license.lock"}
 		bytes := h.ReadFile("./testdata/licenselock/dependencies-old.json")
@@ -170,10 +170,10 @@ func TestLicenseLockCreate(t *testing.T) {
 		stderr := h.InitFile(stderrPath)
 		defer h.CleanupFile(stderrPath)
 
-		locker := adlr.MakeDependencyLocker()
+		locker := internal.MakeDependencyLocker()
 		printer := prettyprinter.NewPrettyPrinterFromRaw(stderr, os.Stdout)
 		reader := reader.NewLimitedReader()
-		lock := adlr.MakeLicenseLockFromRaw(locker, lockPath, printer, reader)
+		lock := internal.MakeLicenseLockFromRaw(locker, lockPath, printer, reader)
 
 		bytes := h.ReadFile("./testdata/licenselock/dependencies-new.json")
 		deps := h.UnmarshalDependencyLocks(bytes)
@@ -196,7 +196,7 @@ func TestLicenseLockCreate(t *testing.T) {
 func TestLicenseLockOverwrite(t *testing.T) {
 	t.Run("happy path", func(t *testing.T) {
 		path := os.TempDir()
-		lock := adlr.MakeLicenseLock(path)
+		lock := internal.MakeLicenseLock(path)
 
 		h := LicenseLockHelper{t, path + "/license.lock"}
 		file := h.InitLock()
@@ -216,7 +216,7 @@ func TestLicenseLockOverwrite(t *testing.T) {
 	})
 	t.Run("overwrite stress test", func(t *testing.T) {
 		path := os.TempDir()
-		lock := adlr.MakeLicenseLock(path)
+		lock := internal.MakeLicenseLock(path)
 
 		h := LicenseLockHelper{t, path + "/license.lock"}
 		file := h.InitLock()
@@ -227,7 +227,7 @@ func TestLicenseLockOverwrite(t *testing.T) {
 		file.Close()
 
 		oldLocks := h.UnmarshalDependencyLocks(bytes)
-		oldMap := adlr.DepLocksToDepLockMap(oldLocks)
+		oldMap := internal.DepLocksToDepLockMap(oldLocks)
 
 		bytes = h.ReadFile("./testdata/licenselock/dependencies-new.json")
 		newDeps := h.UnmarshalDependencyLocks(bytes)
@@ -236,7 +236,7 @@ func TestLicenseLockOverwrite(t *testing.T) {
 
 		bytes = h.ReadLock()
 		resultLocks := h.UnmarshalDependencyLocks(bytes)
-		resultMap := adlr.DepLocksToDepLockMap(resultLocks)
+		resultMap := internal.DepLocksToDepLockMap(resultLocks)
 
 		alpha := resultMap["alpha"]
 		bravo := resultMap["bravo"]
@@ -273,10 +273,10 @@ func TestLicenseLockOverwrite(t *testing.T) {
 		stderr := h.InitFile(stderrPath)
 		defer h.CleanupFile(stderrPath)
 
-		locker := adlr.MakeDependencyLocker()
+		locker := internal.MakeDependencyLocker()
 		printer := prettyprinter.NewPrettyPrinterFromRaw(stderr, os.Stdout)
 		reader := reader.NewLimitedReader()
-		lock := adlr.MakeLicenseLockFromRaw(locker, lockPath, printer, reader)
+		lock := internal.MakeLicenseLockFromRaw(locker, lockPath, printer, reader)
 
 		file := h.InitLock()
 		defer h.CleanupLock()

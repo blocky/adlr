@@ -1,4 +1,4 @@
-package adlr
+package internal
 
 import "github.com/blocky/adlr/gotool"
 

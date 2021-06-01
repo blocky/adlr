@@ -1,4 +1,4 @@
-package adlr_test
+package internal_test
 
 import (
 	"io/ioutil"
@@ -6,7 +6,7 @@ import (
 
 	"testing"
 
-	"github.com/blocky/adlr"
+	"github.com/blocky/adlr/internal"
 )
 
 type LicenseLockHelper struct {
@@ -45,8 +45,8 @@ func (l LicenseLockHelper) InitFile(
 
 func (l LicenseLockHelper) UnmarshalDependencyLocks(
 	bytes []byte,
-) []adlr.DependencyLock {
-	locks, err := adlr.UnmarshalDependencyLocks(bytes)
+) []internal.DependencyLock {
+	locks, err := internal.UnmarshalDependencyLocks(bytes)
 	l.checkError(err, "failed to unmarshal locks")
 
 	return locks

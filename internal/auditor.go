@@ -1,4 +1,4 @@
-package adlr
+package internal
 
 import "errors"
 
@@ -8,7 +8,7 @@ const NonWhitelistedLicenseErr = "non-whitelisted license: "
 // LicenseAuditor audits DependencyLocks for
 // license types not included in the whitelist
 type LicenseAuditor struct {
-	whitelist LicenseWhitelist
+	whitelist Whitelist
 }
 
 // Create a LicenseAuditor with default values
@@ -19,7 +19,7 @@ func MakeLicenseAuditor() LicenseAuditor {
 
 // Create a LicenseAuditor from specified values
 func MakeLicenseAuditorFromRaw(
-	whitelist LicenseWhitelist,
+	whitelist Whitelist,
 ) LicenseAuditor {
 	return LicenseAuditor{whitelist}
 }

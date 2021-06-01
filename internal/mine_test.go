@@ -1,4 +1,4 @@
-package adlr_test
+package internal_test
 
 import (
 	"errors"
@@ -7,7 +7,7 @@ import (
 	"github.com/go-enry/go-license-detector/v4/licensedb"
 	"github.com/stretchr/testify/assert"
 
-	"github.com/blocky/adlr"
+	"github.com/blocky/adlr/internal"
 )
 
 func TestMakeMine(t *testing.T) {
@@ -15,7 +15,7 @@ func TestMakeMine(t *testing.T) {
 		licensedb.Match{License: "MIT", File: "license"},
 		licensedb.Match{License: "Apache2,0", File: "License"},
 	}
-	m := adlr.MakeMine("name", "dir", "version", matches)
+	m := internal.MakeMine("name", "dir", "version", matches)
 
 	assert.Equal(t, "name", m.Name)
 	assert.Equal(t, "dir", m.Dir)
@@ -25,14 +25,14 @@ func TestMakeMine(t *testing.T) {
 
 func TestMineAddError(t *testing.T) {
 	t.Run("happy path", func(t *testing.T) {
-		var m adlr.Mine
+		var m internal.Mine
 		err := errors.New("error")
 		m.AddError(err)
 
 		assert.Equal(t, "error", m.ErrStr)
 	})
 	t.Run("nil error", func(t *testing.T) {
-		var m adlr.Mine
+		var m internal.Mine
 		var err error
 		m.AddError(err)
 

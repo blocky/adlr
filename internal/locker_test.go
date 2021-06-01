@@ -1,4 +1,4 @@
-package adlr_test
+package internal_test
 
 import (
 	"errors"
@@ -6,73 +6,73 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/blocky/adlr"
+	"github.com/blocky/adlr/internal"
 )
 
-var newLockArray = []adlr.DependencyLock{
-	adlr.DependencyLock{
+var newLockArray = []internal.DependencyLock{
+	internal.DependencyLock{
 		Name:    "1-happy-path",
 		Version: "new-v1",
-		License: adlr.License{
+		License: internal.License{
 			Kind: "kind-1",
 			Text: "text-1",
 		},
 	},
-	adlr.DependencyLock{
+	internal.DependencyLock{
 		Name:    "2-missing-kind",
 		Version: "new-v2",
-		License: adlr.License{
+		License: internal.License{
 			Kind: "",
 			Text: "text-2",
 		},
 	},
-	adlr.DependencyLock{
+	internal.DependencyLock{
 		Name:    "3-missing-text",
 		Version: "new-v3",
-		License: adlr.License{
+		License: internal.License{
 			Kind: "kind-3",
 			Text: "",
 		},
 	},
-	adlr.DependencyLock{
+	internal.DependencyLock{
 		Name:    "4-missing-all",
 		Version: "new-v4",
-		License: adlr.License{
+		License: internal.License{
 			Kind: "",
 			Text: "",
 		},
 	},
 }
 
-var oldLockArray = []adlr.DependencyLock{
-	adlr.DependencyLock{
+var oldLockArray = []internal.DependencyLock{
+	internal.DependencyLock{
 		Name:    "1-happy-path",
 		Version: "old-v1",
-		License: adlr.License{
+		License: internal.License{
 			Kind: "kind-1",
 			Text: "text-1",
 		},
 	},
-	adlr.DependencyLock{
+	internal.DependencyLock{
 		Name:    "2-missing-kind",
 		Version: "old-v2",
-		License: adlr.License{
+		License: internal.License{
 			Kind: "kind-2",
 			Text: "text-2",
 		},
 	},
-	adlr.DependencyLock{
+	internal.DependencyLock{
 		Name:    "3-missing-text",
 		Version: "old-v3",
-		License: adlr.License{
+		License: internal.License{
 			Kind: "kind-3",
 			Text: "text-3",
 		},
 	},
-	adlr.DependencyLock{
+	internal.DependencyLock{
 		Name:    "4-missing-all",
 		Version: "old-v4",
-		License: adlr.License{
+		License: internal.License{
 			Kind: "kind-4",
 			Text: "text-4",
 		},
@@ -80,15 +80,15 @@ var oldLockArray = []adlr.DependencyLock{
 }
 
 func makeLockerErr(
-	lock adlr.DependencyLock,
+	lock internal.DependencyLock,
 	errs ...error,
-) adlr.LockerError {
-	return adlr.MakeLockerError(lock.Name, lock.Version, errs...)
+) internal.LockerError {
+	return internal.MakeLockerError(lock.Name, lock.Version, errs...)
 }
 
 func TestDependencyLockerLockNew(t *testing.T) {
 	t.Run("happy path", func(t *testing.T) {
-		locker := adlr.MakeDependencyLocker()
+		locker := internal.MakeDependencyLocker()
 		locks := locker.LockNew(newLockArray)
 
 		assert.Equal(t, newLockArray, locks)
@@ -96,16 +96,16 @@ func TestDependencyLockerLockNew(t *testing.T) {
 }
 
 func TestDependencyLockerLockNewWithOld(t *testing.T) {
-	newLocks := adlr.DepLocksToDepLockMap(newLockArray)
-	oldLocks := adlr.DepLocksToDepLockMap(oldLockArray)
+	newLocks := internal.DepLocksToDepLockMap(newLockArray)
+	oldLocks := internal.DepLocksToDepLockMap(oldLockArray)
 
-	locker := adlr.MakeDependencyLocker()
+	locker := internal.MakeDependencyLocker()
 	result := locker.LockNewWithOld(
 		newLocks,
 		oldLocks,
 	)
 
-	resultsMap := adlr.DepLocksToDepLockMap(result)
+	resultsMap := internal.DepLocksToDepLockMap(result)
 	happyPath := resultsMap["1-happy-path"]
 	missingKind := resultsMap["2-missing-kind"]
 	missingText := resultsMap["3-missing-text"]
@@ -133,12 +133,12 @@ func TestDependencyLockerAlphabetize(t *testing.T) {
 	expected := []string{"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l",
 		"m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"}
 
-	var locks = make([]adlr.DependencyLock, len(randomized))
+	var locks = make([]internal.DependencyLock, len(randomized))
 	for i, name := range randomized {
-		locks[i] = adlr.DependencyLock{Name: name}
+		locks[i] = internal.DependencyLock{Name: name}
 	}
 
-	locker := adlr.MakeDependencyLocker()
+	locker := internal.MakeDependencyLocker()
 	result := locker.Alphabetize(locks)
 
 	for j, lock := range result {
@@ -147,11 +147,11 @@ func TestDependencyLockerAlphabetize(t *testing.T) {
 }
 
 func TestDependencyLockerVetLock(t *testing.T) {
-	var kindErr = errors.New(adlr.ReqEditField + "kind")
-	var textErr = errors.New(adlr.ReqEditField + "text")
+	var kindErr = errors.New(internal.ReqEditField + "kind")
+	var textErr = errors.New(internal.ReqEditField + "text")
 	t.Run("happy path", func(t *testing.T) {
 		lock := newLockArray[0]
-		locker := adlr.MakeDependencyLocker()
+		locker := internal.MakeDependencyLocker()
 		err := locker.VetLock(lock)
 
 		assert.Nil(t, err)
@@ -159,7 +159,7 @@ func TestDependencyLockerVetLock(t *testing.T) {
 	t.Run("error on missing kind", func(t *testing.T) {
 		lock := newLockArray[1]
 		lockErr := makeLockerErr(lock, kindErr)
-		locker := adlr.MakeDependencyLocker()
+		locker := internal.MakeDependencyLocker()
 		err := locker.VetLock(lock)
 
 		assert.Equal(t, lockErr, *err)
@@ -167,7 +167,7 @@ func TestDependencyLockerVetLock(t *testing.T) {
 	t.Run("error on missing text", func(t *testing.T) {
 		lock := newLockArray[2]
 		lockErr := makeLockerErr(lock, textErr)
-		locker := adlr.MakeDependencyLocker()
+		locker := internal.MakeDependencyLocker()
 		err := locker.VetLock(lock)
 
 		assert.Equal(t, lockErr, *err)
@@ -175,7 +175,7 @@ func TestDependencyLockerVetLock(t *testing.T) {
 	t.Run("error on missing kind and text", func(t *testing.T) {
 		lock := newLockArray[3]
 		lockErr := makeLockerErr(lock, kindErr, textErr)
-		locker := adlr.MakeDependencyLocker()
+		locker := internal.MakeDependencyLocker()
 		err := locker.VetLock(lock)
 
 		assert.Equal(t, lockErr, *err)
@@ -183,10 +183,10 @@ func TestDependencyLockerVetLock(t *testing.T) {
 }
 
 func TestDependencyLockerVetLocks(t *testing.T) {
-	var kindErr = errors.New(adlr.ReqEditField + "kind")
+	var kindErr = errors.New(internal.ReqEditField + "kind")
 	t.Run("happy path", func(t *testing.T) {
 		final := oldLockArray
-		locker := adlr.MakeDependencyLocker()
+		locker := internal.MakeDependencyLocker()
 		err := locker.VetLocks(final)
 		assert.Nil(t, err)
 	})
@@ -194,9 +194,9 @@ func TestDependencyLockerVetLocks(t *testing.T) {
 		badLock := newLockArray[1]
 		final := append(oldLockArray, badLock)
 		lockErr := makeLockerErr(badLock, kindErr)
-		lockErrs := []adlr.LockerError{lockErr}
+		lockErrs := []internal.LockerError{lockErr}
 
-		locker := adlr.MakeDependencyLocker()
+		locker := internal.MakeDependencyLocker()
 		err := locker.VetLocks(final)
 
 		assert.Equal(t, lockErrs, err)

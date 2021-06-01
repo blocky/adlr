@@ -1,4 +1,4 @@
-package adlr
+package internal
 
 // License holds license details of a golang module
 // derived by licensedb and solved by Miner

@@ -1,4 +1,4 @@
-package adlr
+package internal
 
 import "github.com/go-enry/go-license-detector/v4/licensedb"
 

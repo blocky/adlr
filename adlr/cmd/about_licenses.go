@@ -7,7 +7,7 @@ import (
 
 	"github.com/spf13/cobra"
 
-	"github.com/blocky/adlr"
+	"github.com/blocky/adlr/api"
 	"github.com/blocky/prettyprinter"
 )
 
@@ -62,16 +62,16 @@ func init() {
 
 func Deserialize(
 	deps string,
-) ([]adlr.DependencyLock, error) {
+) ([]api.DependencyLock, error) {
 	bytes := []byte(deps)
-	return adlr.DeserializeLocks(bytes)
+	return api.DeserializeLocks(bytes)
 }
 
 func PrintLicense(
-	locks []adlr.DependencyLock,
+	locks []api.DependencyLock,
 	name string,
 ) {
-	lockMap := adlr.DepLocksToDepLockMap(locks)
+	lockMap := api.DepLocksToDepLockMap(locks)
 	lock, exist := lockMap[name]
 	if !exist {
 		ExitOnErr(
@@ -82,7 +82,7 @@ func PrintLicense(
 }
 
 func PrintLicenses(
-	locks []adlr.DependencyLock,
+	locks []api.DependencyLock,
 ) {
 	p := prettyprinter.NewPrettyPrinter()
 	err := p.
@@ -93,7 +93,7 @@ func PrintLicenses(
 }
 
 func PrintNames(
-	locks []adlr.DependencyLock,
+	locks []api.DependencyLock,
 ) {
 	var names = make([]string, len(locks))
 	for i, lock := range locks {

@@ -3,7 +3,7 @@
 package mocks
 
 import (
-	adlr "github.com/blocky/adlr"
+	internal "github.com/blocky/adlr/internal"
 	mock "github.com/stretchr/testify/mock"
 )
 
@@ -13,15 +13,15 @@ type Locker struct {
 }
 
 // LockNew provides a mock function with given fields: _a0
-func (_m *Locker) LockNew(_a0 []adlr.DependencyLock) []adlr.DependencyLock {
+func (_m *Locker) LockNew(_a0 []internal.DependencyLock) []internal.DependencyLock {
 	ret := _m.Called(_a0)
 
-	var r0 []adlr.DependencyLock
-	if rf, ok := ret.Get(0).(func([]adlr.DependencyLock) []adlr.DependencyLock); ok {
+	var r0 []internal.DependencyLock
+	if rf, ok := ret.Get(0).(func([]internal.DependencyLock) []internal.DependencyLock); ok {
 		r0 = rf(_a0)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]adlr.DependencyLock)
+			r0 = ret.Get(0).([]internal.DependencyLock)
 		}
 	}
 
@@ -29,15 +29,15 @@ func (_m *Locker) LockNew(_a0 []adlr.DependencyLock) []adlr.DependencyLock {
 }
 
 // LockNewWithOld provides a mock function with given fields: new, old
-func (_m *Locker) LockNewWithOld(new map[string]adlr.DependencyLock, old map[string]adlr.DependencyLock) []adlr.DependencyLock {
+func (_m *Locker) LockNewWithOld(new map[string]internal.DependencyLock, old map[string]internal.DependencyLock) []internal.DependencyLock {
 	ret := _m.Called(new, old)
 
-	var r0 []adlr.DependencyLock
-	if rf, ok := ret.Get(0).(func(map[string]adlr.DependencyLock, map[string]adlr.DependencyLock) []adlr.DependencyLock); ok {
+	var r0 []internal.DependencyLock
+	if rf, ok := ret.Get(0).(func(map[string]internal.DependencyLock, map[string]internal.DependencyLock) []internal.DependencyLock); ok {
 		r0 = rf(new, old)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]adlr.DependencyLock)
+			r0 = ret.Get(0).([]internal.DependencyLock)
 		}
 	}
 
@@ -45,15 +45,15 @@ func (_m *Locker) LockNewWithOld(new map[string]adlr.DependencyLock, old map[str
 }
 
 // VetLocks provides a mock function with given fields: _a0
-func (_m *Locker) VetLocks(_a0 []adlr.DependencyLock) []adlr.LockerError {
+func (_m *Locker) VetLocks(_a0 []internal.DependencyLock) []internal.LockerError {
 	ret := _m.Called(_a0)
 
-	var r0 []adlr.LockerError
-	if rf, ok := ret.Get(0).(func([]adlr.DependencyLock) []adlr.LockerError); ok {
+	var r0 []internal.LockerError
+	if rf, ok := ret.Get(0).(func([]internal.DependencyLock) []internal.LockerError); ok {
 		r0 = rf(_a0)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]adlr.LockerError)
+			r0 = ret.Get(0).([]internal.LockerError)
 		}
 	}
 

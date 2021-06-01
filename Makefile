@@ -27,7 +27,9 @@ clean:
 	@rm -rf $(BIN)
 
 mock: # autogenerate mocks for interface testing
-	@$(MOCK) --all --output=./$(MOCKS)
+	@$(MOCK) \
+	-dir=./internal,./reader,./gotool \
+	--all --output=./$(MOCKS)
 
 # building
 bin:

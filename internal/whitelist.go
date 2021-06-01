@@ -1,4 +1,4 @@
-package adlr
+package internal
 
 import "sort"
 
@@ -9,13 +9,17 @@ import "sort"
 // To add to this list, see:
 // https://spdx.org/licenses/
 // for license identifiers
-var Whitelist = []string{
+var DefaultWhitelist = []string{
 	"Apache-2.0",
 	"BSD-1-Clause",
 	"BSD-2-Clause",
 	"BSD-3-Clause",
 	"MIT",
 	"MIT-0",
+}
+
+type Whitelist interface {
+	Find(string) bool
 }
 
 // LicenseWhitelist is a whitelist of automatically fulfillable
@@ -26,15 +30,15 @@ type LicenseWhitelist struct {
 }
 
 // Create a LicenseWhitelist with default values
-func MakeLicenseWhitelist() LicenseWhitelist {
-	return MakeLicenseWhitelistFromRaw(Whitelist)
+func MakeLicenseWhitelist() Whitelist {
+	return MakeLicenseWhitelistFromRaw(DefaultWhitelist)
 }
 
 // Create a LicenseWhitelist from specified values.
 // Initialize whitelist for searching
 func MakeLicenseWhitelistFromRaw(
 	whitelist []string,
-) LicenseWhitelist {
+) Whitelist {
 	init := preprocess(whitelist)
 	return LicenseWhitelist{whitelist, init}
 }
