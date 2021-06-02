@@ -9,7 +9,7 @@ type Auditor interface {
 	Audit(...DependencyLock) error
 }
 
-// MakeAuditor creates a default Auditor with a default Whitelist
+// MakeAuditor creates an Auditor with a specified Whitelist
 func MakeAuditor(
 	whitelist Whitelist,
 ) Auditor {
