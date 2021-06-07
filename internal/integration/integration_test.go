@@ -6,7 +6,7 @@ import (
 
 	"github.com/stretchr/testify/suite"
 
-	"github.com/blocky/adlr/api"
+	"github.com/blocky/adlr"
 	"github.com/blocky/adlr/pkg/gotool"
 )
 
@@ -33,16 +33,16 @@ func (suite IntegrationTestSuite) TestADLR() {
 	suite.Nil(err)
 
 	direct := gotool.FilterDirectImportModules(mods)
-	prospects := api.MakeProspects(direct...)
+	prospects := adlr.MakeProspects(direct...)
 
-	prospector := api.MakeProspector()
+	prospector := adlr.MakeProspector()
 	mines, err := prospector.Prospect(prospects...)
 	suite.Nil(err)
 
-	miner := api.MakeMiner()
+	miner := adlr.MakeMiner()
 	locks, err := miner.Mine(mines...)
 
-	licenselock := api.MakeLicenseLockManager("./")
+	licenselock := adlr.MakeLicenseLockManager("./")
 	err = licenselock.Lock(locks...)
 	defer os.Remove("./" + "license.lock")
 	suite.Nil(err)
@@ -50,8 +50,8 @@ func (suite IntegrationTestSuite) TestADLR() {
 	locks, err = licenselock.Read()
 	suite.Nil(err)
 
-	whitelist := api.MakeWhitelist(api.DefaultWhitelist)
-	auditor := api.MakeAuditor(whitelist)
+	whitelist := adlr.MakeWhitelist(adlr.DefaultWhitelist)
+	auditor := adlr.MakeAuditor(whitelist)
 	err = auditor.Audit(locks...)
 	suite.Nil(err)
 }
