@@ -21,7 +21,7 @@ LICENSELOCK=$(ADLR_MAIN)/license.lock
 BUILDLIST=buildlist.json
 VERSION=$(ADLR_MAIN)/version
 
-GIT_TAG=$(shell git rev-parse --short HEAD)
+GIT_TAG=$(shell git describe --tags)
 
 default: test
 
