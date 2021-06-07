@@ -7,7 +7,7 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/blocky/adlr/gotool"
+	"github.com/blocky/adlr/pkg/gotool"
 )
 
 var TestDirBuildList = "./testdata/buildlist/"

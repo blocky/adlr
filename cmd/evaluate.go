@@ -6,7 +6,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/blocky/adlr/api"
-	"github.com/blocky/adlr/gotool"
+	"github.com/blocky/adlr/pkg/gotool"
 	"github.com/blocky/prettyprinter"
 )
 

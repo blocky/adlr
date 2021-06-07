@@ -1,6 +1,6 @@
 package internal
 
-import "github.com/blocky/adlr/gotool"
+import "github.com/blocky/adlr/pkg/gotool"
 
 // Prospects hold the data required to text mine a golang module
 type Prospect struct {

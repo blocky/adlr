@@ -7,7 +7,7 @@ import (
 	"github.com/stretchr/testify/suite"
 
 	"github.com/blocky/adlr/api"
-	"github.com/blocky/adlr/gotool"
+	"github.com/blocky/adlr/pkg/gotool"
 )
 
 type IntegrationTestSuite struct {
