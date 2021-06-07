@@ -13,6 +13,9 @@ var (
 	// MarshalDependencyLocks is function alias for ascertain.MarshalDependencyLocks
 	MarshalDependencyLocks = ascertain.MarshalDependencyLocks
 
+	// MakeProspects is a type alias for ascertain.MakeProspects
+	MakeProspects = ascertain.MakeProspects
+
 	// UnmarshalDependencyLocks is a function alias for ascertain.UnmarshalDependencyLocks
 	UnmarshalDependencyLocks = ascertain.UnmarshalDependencyLocks
 
@@ -25,9 +28,6 @@ var (
 
 // Prospect is a type alias for ascertain.Prospect
 type Prospect = ascertain.Prospect
-
-// MakeProspects is a type alias for ascertain.MakeProspects
-var MakeProspects = ascertain.MakeProspects
 
 // Prospector takes a variadic list of Prospects and uses text mining to
 // derive Mines with potential matches containing license type, license
