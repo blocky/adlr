@@ -26,9 +26,12 @@ func init() {
 func PrintVersion(
 	version string,
 ) {
+	type VersionOutput struct {
+		Version string `json:"version"`
+	}
 	p := prettyprinter.NewPrettyPrinter()
 	err := p.
-		Add(version).
+		Add(VersionOutput{version}).
 		StdoutDump().
 		StderrDumpOnError()
 	ExitOnErr(err)
