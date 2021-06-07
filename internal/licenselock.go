@@ -3,7 +3,7 @@ package internal
 import (
 	"os"
 
-	"github.com/blocky/adlr/reader"
+	"github.com/blocky/adlr/pkg/reader"
 	"github.com/blocky/prettyprinter"
 )
 

@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 
 	"github.com/blocky/adlr/internal"
-	"github.com/blocky/adlr/reader"
+	"github.com/blocky/adlr/pkg/reader"
 )
 
 var DependencyLocks = []internal.DependencyLock{

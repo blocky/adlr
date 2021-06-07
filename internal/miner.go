@@ -6,7 +6,7 @@ import (
 
 	"github.com/go-enry/go-license-detector/v4/licensedb"
 
-	"github.com/blocky/adlr/reader"
+	"github.com/blocky/adlr/pkg/reader"
 )
 
 // Minimum required confidence for a probable license from text mining

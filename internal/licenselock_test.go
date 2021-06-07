@@ -8,7 +8,7 @@ import (
 
 	"github.com/blocky/adlr/internal"
 	"github.com/blocky/adlr/internal/mocks"
-	"github.com/blocky/adlr/reader"
+	"github.com/blocky/adlr/pkg/reader"
 	"github.com/blocky/prettyprinter"
 )
 
