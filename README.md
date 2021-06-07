@@ -18,13 +18,26 @@ ADLR creates a license lock file. This is a readable and manually edittable json
 + monitor imports' licenses across versions
 + automate listing *copyrights*|*permissions*|*warranties* for licenses in your source code
 
-## ADLR and Distributables
-Automate a license information command with your license lock file in your distributable(s)
-1. Serialize the lock file
-2. Pass to a variable in your code with the `-ldflags` build flag
-3. Deserialize for license information command(s) printing
+## Get ADLR
+`go get github.com/blocky/adlr/...`
 
-An example of this is built in to the repo. See `Makefile`, `sh/build.sh`, and the `cmd/` folder for details. Or test out ADLR's `about license(s)` commands with `make build`.
+## ADLR and Distributable Inclusion
+Automate a license information command for your distributable with your license lock file
+
+### Linker Flag
+1. Serialize the lock file _(Go Linker flag requires strings to have no spaces or newlines)_
+2. Pass to a variable in your code with the `-ldflags` build flag
+3. Deserialize and unmarshal for license information command(s)
+
+### Go 1.16 File Embedding
+1. Embed your license lock file with an embed directive:
+```golang
+\\go:embed license.lock
+var DependencyRequirements []byte
+```
+2. Unmarshal for license information command(s)
+
+An example of this is built in to the repo. See `main.go`and the `cmd/` folder for details. Or test out ADLR's `about license(s)` commands with `go get` or `make build`.
 
 # ADLR Process
 ## Your Golang Module buildlist
