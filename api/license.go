@@ -1,6 +1,6 @@
 package api
 
-import "github.com/blocky/adlr/internal"
+import "github.com/blocky/adlr/pkg/ascertain"
 
-// License is a type alias for internal.License
-type License = internal.License
+// License is a type alias for ascertain.License
+type License = ascertain.License

@@ -1,21 +1,21 @@
 package api
 
-import "github.com/blocky/adlr/internal"
+import "github.com/blocky/adlr/pkg/ascertain"
 
-// DependencyLock is a type alias for internal.DependencyLock
-type DependencyLock = internal.DependencyLock
+// DependencyLock is a type alias for ascertain.DependencyLock
+type DependencyLock = ascertain.DependencyLock
 
-// DepLocksToDepLockMap is function alias for internal.DepLocksToDepLockMap
-var DepLocksToDepLockMap = internal.DepLocksToDepLockMap
+// DepLocksToDepLockMap is function alias for ascertain.DepLocksToDepLockMap
+var DepLocksToDepLockMap = ascertain.DepLocksToDepLockMap
 
-// MarshalDependencyLocks is function alias for internal.MarshalDependencyLocks
-var MarshalDependencyLocks = internal.MarshalDependencyLocks
+// MarshalDependencyLocks is function alias for ascertain.MarshalDependencyLocks
+var MarshalDependencyLocks = ascertain.MarshalDependencyLocks
 
-// UnmarshalDependencyLocks is a function alias for internal.UnmarshalDependencyLocks
-var UnmarshalDependencyLocks = internal.UnmarshalDependencyLocks
+// UnmarshalDependencyLocks is a function alias for ascertain.UnmarshalDependencyLocks
+var UnmarshalDependencyLocks = ascertain.UnmarshalDependencyLocks
 
-// DeserializeLocks is function alias for internal.DeserializeLocks
-var DeserializeLocks = internal.DeserializeLocks
+// DeserializeLocks is function alias for ascertain.DeserializeLocks
+var DeserializeLocks = ascertain.DeserializeLocks
 
-// SerializeLocks is function alias for internal.SerializeLocks
-var SerializeLocks = internal.SerializeLocks
+// SerializeLocks is function alias for ascertain.SerializeLocks
+var SerializeLocks = ascertain.SerializeLocks

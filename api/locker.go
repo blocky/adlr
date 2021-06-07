@@ -1,11 +1,11 @@
 package api
 
-import "github.com/blocky/adlr/internal"
+import "github.com/blocky/adlr/pkg/ascertain"
 
-// Locker is a type alias for internal.Locker
-type Locker = internal.Locker
+// Locker is a type alias for ascertain.Locker
+type Locker = ascertain.Locker
 
 // MakeLocker creates a Locker
 func MakeLocker() Locker {
-	return internal.MakeDependencyLocker()
+	return ascertain.MakeDependencyLocker()
 }

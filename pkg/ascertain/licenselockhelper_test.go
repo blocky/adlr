@@ -1,4 +1,4 @@
-package internal_test
+package ascertain_test
 
 import (
 	"io/ioutil"
@@ -6,7 +6,7 @@ import (
 
 	"testing"
 
-	"github.com/blocky/adlr/internal"
+	"github.com/blocky/adlr/pkg/ascertain"
 )
 
 type LicenseLockHelper struct {
@@ -45,8 +45,8 @@ func (l LicenseLockHelper) InitFile(
 
 func (l LicenseLockHelper) UnmarshalDependencyLocks(
 	bytes []byte,
-) []internal.DependencyLock {
-	locks, err := internal.UnmarshalDependencyLocks(bytes)
+) []ascertain.DependencyLock {
+	locks, err := ascertain.UnmarshalDependencyLocks(bytes)
 	l.checkError(err, "failed to unmarshal locks")
 
 	return locks

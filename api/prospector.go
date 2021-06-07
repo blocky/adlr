@@ -1,6 +1,6 @@
 package api
 
-import "github.com/blocky/adlr/internal"
+import "github.com/blocky/adlr/pkg/ascertain"
 
 // Prospector takes a variadic list of Prospects and uses text mining to
 // derive Mines with potential matches containing license type, license
@@ -12,5 +12,5 @@ type Prospector interface {
 
 // MakeProspector creates a Prospector
 func MakeProspector() Prospector {
-	return internal.MakeLicenseProspector()
+	return ascertain.MakeLicenseProspector()
 }

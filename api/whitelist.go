@@ -1,6 +1,6 @@
 package api
 
-import "github.com/blocky/adlr/internal"
+import "github.com/blocky/adlr/pkg/ascertain"
 
 // This list is of SPDX License Identifiers, the standard
 // used by the text-mining package:
@@ -18,12 +18,12 @@ var DefaultWhitelist = []string{
 	"MIT-0",
 }
 
-// Whitelist is a type alias for internal.Whitelist
-type Whitelist = internal.Whitelist
+// Whitelist is a type alias for ascertain.Whitelist
+type Whitelist = ascertain.Whitelist
 
 // MakeWhitelist creates a Whitelist from specified licenses
 func MakeWhitelist(
 	licenses []string,
 ) Whitelist {
-	return internal.MakeLicenseWhitelist(licenses)
+	return ascertain.MakeLicenseWhitelist(licenses)
 }

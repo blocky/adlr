@@ -1,6 +1,6 @@
 package api
 
-import "github.com/blocky/adlr/internal"
+import "github.com/blocky/adlr/pkg/ascertain"
 
 // Auditor takes a variadic list of DependencyLocks and audits their licenses
 // against a license whitelist, returning an error of all offending
@@ -13,5 +13,5 @@ type Auditor interface {
 func MakeAuditor(
 	whitelist Whitelist,
 ) Auditor {
-	return internal.MakeLicenseAuditor(whitelist)
+	return ascertain.MakeLicenseAuditor(whitelist)
 }

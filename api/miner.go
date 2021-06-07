@@ -1,7 +1,7 @@
 package api
 
 import (
-	"github.com/blocky/adlr/internal"
+	"github.com/blocky/adlr/pkg/ascertain"
 	"github.com/blocky/adlr/pkg/reader"
 )
 
@@ -15,7 +15,7 @@ type Miner interface {
 
 // MakeMiner creates a default Miner
 func MakeMiner() Miner {
-	return internal.MakeLicenseMiner()
+	return ascertain.MakeLicenseMiner()
 }
 
 // MakeMinerFromRaw creates a Miner with specified minimum confidences and
@@ -25,9 +25,9 @@ func MakeMinerFromRaw(
 	lead float32,
 	reader *reader.LimitedReader,
 ) Miner {
-	minimums := internal.Minimums{
+	minimums := ascertain.Minimums{
 		Confidence: confidence,
 		Lead:       lead,
 	}
-	return internal.MakeLicenseMinerFromRaw(minimums, reader)
+	return ascertain.MakeLicenseMinerFromRaw(minimums, reader)
 }

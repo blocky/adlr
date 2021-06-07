@@ -1,4 +1,4 @@
-package internal
+package ascertain
 
 // License holds license details of a golang module
 // derived by licensedb and solved by Miner

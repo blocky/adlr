@@ -9,6 +9,7 @@ GOBUILD=$(GO) build
 INTEGRATION=integration
 TIMEOUT=5m
 
+ADLR_SRC=pkg
 MOCK=mockery
 MOCKS=internal/mocks
 
@@ -24,13 +25,14 @@ clean:
 	@rm -rf $(BUILDLIST)
 	@rm -rf $(BIN)
 
-mock: mock-internal mock-reader # autogenerate mocks for interface testing
+# mock autogeneration for interface testing
+mock: mock-internal mock-pkg
 
 mock-internal:
 	@$(MOCK) --dir=./internal --all --output=./$(MOCKS)
 
-mock-reader:
-	@$(MOCK) --dir=./reader --all --output=./$(MOCKS)
+mock-pkg:
+	@$(MOCK) --dir=./$(ADLR_SRC) --all --output=./$(MOCKS)
 
 # building
 bin:

@@ -1,9 +1,9 @@
 package api
 
-import "github.com/blocky/adlr/internal"
+import "github.com/blocky/adlr/pkg/ascertain"
 
-// Prospect is a type alias for internal.Prospect
-type Prospect = internal.Prospect
+// Prospect is a type alias for ascertain.Prospect
+type Prospect = ascertain.Prospect
 
-// MakeProspects is a type alias for internal.MakeProspects
-var MakeProspects = internal.MakeProspects
+// MakeProspects is a type alias for ascertain.MakeProspects
+var MakeProspects = ascertain.MakeProspects

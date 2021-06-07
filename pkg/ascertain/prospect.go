@@ -1,4 +1,4 @@
-package internal
+package ascertain
 
 import "github.com/blocky/adlr/pkg/gotool"
 
