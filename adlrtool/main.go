@@ -1,8 +1,13 @@
 package main
 
-import "github.com/blocky/adlr/adlrtool/cmd"
+import (
+	_ "embed"
 
-var DependencyRequirements = ""
+	"github.com/blocky/adlr/adlrtool/cmd"
+)
+
+//go:embed license.lock
+var DependencyRequirements []byte
 
 func main() {
 	cmd.DependencyRequirements = DependencyRequirements

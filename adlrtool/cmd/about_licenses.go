@@ -11,7 +11,7 @@ import (
 	"github.com/blocky/prettyprinter"
 )
 
-var DependencyRequirements string
+var DependencyRequirements []byte
 var DependencyNamesOnly bool
 var DependencyName string
 
@@ -20,7 +20,7 @@ var aboutLicenseCmd = &cobra.Command{
 	Short: "A dependency license",
 	Long:  `A software dependency license used by the client`,
 	Run: func(cmd *cobra.Command, args []string) {
-		locks, err := Deserialize(DependencyRequirements)
+		locks, err := adlr.UnmarshalDependencyLocks(DependencyRequirements)
 		ExitOnErr(err)
 
 		PrintLicense(locks, DependencyName)
@@ -32,7 +32,7 @@ var aboutLicensesCmd = &cobra.Command{
 	Short: "All dependency licenses",
 	Long:  `List all software dependency licenses used by the client`,
 	Run: func(cmd *cobra.Command, args []string) {
-		locks, err := Deserialize(DependencyRequirements)
+		locks, err := adlr.UnmarshalDependencyLocks(DependencyRequirements)
 		ExitOnErr(err)
 
 		if DependencyNamesOnly {
@@ -58,13 +58,6 @@ func init() {
 
 	aboutCmd.AddCommand(aboutLicenseCmd)
 	aboutCmd.AddCommand(aboutLicensesCmd)
-}
-
-func Deserialize(
-	deps string,
-) ([]adlr.DependencyLock, error) {
-	bytes := []byte(deps)
-	return adlr.DeserializeLocks(bytes)
 }
 
 func PrintLicense(
