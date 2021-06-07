@@ -6,7 +6,7 @@ GOTIDY=$(GOMOD) tidy
 GOLIST=$(GO) list
 GOBUILD=$(GO) build
 
-INTEGRATION=integration
+INTEGRATION=internal/integration
 TIMEOUT=5m
 
 ADLR_SRC=pkg

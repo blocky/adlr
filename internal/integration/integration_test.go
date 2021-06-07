@@ -22,7 +22,7 @@ func TestIntegrationTestSuite(t *testing.T) {
 }
 
 func (suite IntegrationTestSuite) TestADLR() {
-	buildlist, err := os.Open("../buildlist.json")
+	buildlist, err := os.Open("../../buildlist.json")
 	if err != nil {
 		panic("no buildlist found")
 	}
