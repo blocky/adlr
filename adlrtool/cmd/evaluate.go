@@ -13,6 +13,7 @@ import (
 var BuildListPath string
 var ModuleDir string
 var Verbose bool
+var LicenseList []string
 
 var evaluateCmd = &cobra.Command{
 	Use:   "evaluate",
@@ -30,14 +31,21 @@ var evaluateCmd = &cobra.Command{
 func init() {
 	buildListKey := "buildlist"
 
-	evaluateCmd.Flags().StringVar(
-		&BuildListPath, buildListKey, "./buildlist.json", "path of json build list",
+	evaluateCmd.Flags().StringVarP(
+		&BuildListPath, buildListKey, "b", "./buildlist.json",
+		"path of module build list in json format",
 	)
 	evaluateCmd.Flags().StringVarP(
-		&ModuleDir, "dir", "d", "./", "module directory",
+		&ModuleDir, "dir", "d", "./",
+		"output directory or location of your existing license.lock",
 	)
 	evaluateCmd.Flags().BoolVarP(
-		&Verbose, "verbose", "v", false, "verbose debugging output",
+		&Verbose, "verbose", "v", false,
+		"verbose debugging output",
+	)
+	evaluateCmd.Flags().StringSliceVarP(
+		&LicenseList, "whitelist", "w", adlr.DefaultWhitelist,
+		"comma separated list of acceptable licenses in SPDX License Identifier format",
 	)
 
 	rootCmd.AddCommand(evaluateCmd)
@@ -69,7 +77,7 @@ func Evaluate(buildlist *os.File) {
 	locks, err = licenselock.Read()
 	ExitOnErr(err)
 
-	whitelist := adlr.MakeWhitelist(adlr.DefaultWhitelist) //https://github.com/blocky/adlr/issues/23
+	whitelist := adlr.MakeWhitelist(LicenseList)
 	auditor := adlr.MakeAuditor(whitelist)
 	err = auditor.Audit(locks...)
 	ExitOnErr(err)
