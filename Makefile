@@ -17,8 +17,11 @@ MOCKS=internal/mocks
 BIN=bin
 SCRIPTS=sh
 
-LICENSELOCK=adlrtool/license.lock
+LICENSELOCK=$(ADLR_MAIN)/license.lock
 BUILDLIST=buildlist.json
+VERSION=$(ADLR_MAIN)/version
+
+GIT_TAG=$(shell git describe --tags)
 
 default: test
 
@@ -44,7 +47,7 @@ build: build-linux-amd64
 build-tmp: bin # build tmp exec to perform adlr steps
 	@$(GOBUILD) -o $(BIN)/tmp ./$(ADLR_MAIN)
 
-build-linux-amd64: licenselock
+build-linux-amd64: licenselock version
 	@$(SCRIPTS)/build.sh \
 	adlr linux amd64 ./$(ADLR_MAIN) ./$(BIN)
 
@@ -55,6 +58,9 @@ licenselock: build-tmp buildlist
 	@$(BIN)/tmp evaluate \
 	--buildlist=$(BUILDLIST) \
 	--dir=$(ADLR_MAIN)
+
+version:
+	@printf $(GIT_TAG) > $(VERSION)
 
 # testing
 test: test-unit test-integration
