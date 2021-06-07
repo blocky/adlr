@@ -3,7 +3,7 @@
 package mocks
 
 import (
-	internal "github.com/blocky/adlr/internal"
+	ascertain "github.com/blocky/adlr/pkg/ascertain"
 	mock "github.com/stretchr/testify/mock"
 )
 
@@ -13,7 +13,7 @@ type Locker struct {
 }
 
 // LockNew provides a mock function with given fields: _a0
-func (_m *Locker) LockNew(_a0 ...internal.DependencyLock) []internal.DependencyLock {
+func (_m *Locker) LockNew(_a0 ...ascertain.DependencyLock) []ascertain.DependencyLock {
 	_va := make([]interface{}, len(_a0))
 	for _i := range _a0 {
 		_va[_i] = _a0[_i]
@@ -22,12 +22,12 @@ func (_m *Locker) LockNew(_a0 ...internal.DependencyLock) []internal.DependencyL
 	_ca = append(_ca, _va...)
 	ret := _m.Called(_ca...)
 
-	var r0 []internal.DependencyLock
-	if rf, ok := ret.Get(0).(func(...internal.DependencyLock) []internal.DependencyLock); ok {
+	var r0 []ascertain.DependencyLock
+	if rf, ok := ret.Get(0).(func(...ascertain.DependencyLock) []ascertain.DependencyLock); ok {
 		r0 = rf(_a0...)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]internal.DependencyLock)
+			r0 = ret.Get(0).([]ascertain.DependencyLock)
 		}
 	}
 
@@ -35,15 +35,15 @@ func (_m *Locker) LockNew(_a0 ...internal.DependencyLock) []internal.DependencyL
 }
 
 // LockNewWithOld provides a mock function with given fields: new, old
-func (_m *Locker) LockNewWithOld(new map[string]internal.DependencyLock, old map[string]internal.DependencyLock) []internal.DependencyLock {
+func (_m *Locker) LockNewWithOld(new map[string]ascertain.DependencyLock, old map[string]ascertain.DependencyLock) []ascertain.DependencyLock {
 	ret := _m.Called(new, old)
 
-	var r0 []internal.DependencyLock
-	if rf, ok := ret.Get(0).(func(map[string]internal.DependencyLock, map[string]internal.DependencyLock) []internal.DependencyLock); ok {
+	var r0 []ascertain.DependencyLock
+	if rf, ok := ret.Get(0).(func(map[string]ascertain.DependencyLock, map[string]ascertain.DependencyLock) []ascertain.DependencyLock); ok {
 		r0 = rf(new, old)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]internal.DependencyLock)
+			r0 = ret.Get(0).([]ascertain.DependencyLock)
 		}
 	}
 
@@ -51,7 +51,7 @@ func (_m *Locker) LockNewWithOld(new map[string]internal.DependencyLock, old map
 }
 
 // VetLocks provides a mock function with given fields: _a0
-func (_m *Locker) VetLocks(_a0 ...internal.DependencyLock) []internal.LockerError {
+func (_m *Locker) VetLocks(_a0 ...ascertain.DependencyLock) []ascertain.LockerError {
 	_va := make([]interface{}, len(_a0))
 	for _i := range _a0 {
 		_va[_i] = _a0[_i]
@@ -60,12 +60,12 @@ func (_m *Locker) VetLocks(_a0 ...internal.DependencyLock) []internal.LockerErro
 	_ca = append(_ca, _va...)
 	ret := _m.Called(_ca...)
 
-	var r0 []internal.LockerError
-	if rf, ok := ret.Get(0).(func(...internal.DependencyLock) []internal.LockerError); ok {
+	var r0 []ascertain.LockerError
+	if rf, ok := ret.Get(0).(func(...ascertain.DependencyLock) []ascertain.LockerError); ok {
 		r0 = rf(_a0...)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).([]internal.LockerError)
+			r0 = ret.Get(0).([]ascertain.LockerError)
 		}
 	}
 
