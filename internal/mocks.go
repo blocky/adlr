@@ -1,4 +1,4 @@
-package mocks
+package internal
 
 import "github.com/blocky/prettyprinter"
 

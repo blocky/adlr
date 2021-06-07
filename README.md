@@ -52,6 +52,7 @@ Unfortunately, golang does not yet have a standard for module license files. The
 direct := gotool.FilterDirectImportModules(mods)
 
 prospects := adlr.MakeProspects(direct...)
+prospector := adlr.MakeProspector()
 mines, err := prospector.Prospect(prospects...)
 ...
 ```
@@ -62,10 +63,10 @@ From prospecting, one or multiple matches are returned for a golang module with 
 mines, err := prospector.Prospect(prospects...)
 ...
 
-miner := adlr.MakeLicenseMiner()
+miner := adlr.MakeMiner()
 locks, err := miner.Mine(mines...)
 if err != nil && Verbose {
-	fmt.Println(err.Error())
+	fmt.Println(err)
 }
 ```
 
@@ -77,22 +78,24 @@ New dependencies take priority, and will fill the lock file. But for new locks t
 locks, err := miner.Mine(mines...)
 ...
 
-licenselock := adlr.MakeLicenseLock("./")
-err = licenselock.Lock(locks)
+licenselock := adlr.MakeLicenseLockManager("./")
+err = licenselock.Lock(locks...)
 ...
 ```
 
 ## Auditing Locked License types
 After locking, dependencies and their licenses have been written to the lock file. But unwanted license types may have slipped through. The auditing step will search through the lock file, checking license types against a whitelist. For any types not listed, an error is returned listing bad license types, and requesting whitelist inclusion or dependency removal.
 ```golang
-licenselock := adlr.MakeLicenseLock("./")
-err = licenselock.Lock(locks)
+licenselock := adlr.MakeLicenseLockManager("./")
+err = licenselock.Lock(locks...)
 ...
 
 locks, err = licenselock.Read()
 ...
-auditor := adlr.MakeLicenseAuditor()
-err = auditor.Audit(locks)
+
+whitelist := adlr.MakeWhitelist([]string{"A","B","C"...})
+auditor := adlr.MakeAuditor(whitelist)
+err = auditor.Audit(locks...)
 ...
 ```
 
