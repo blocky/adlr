@@ -33,7 +33,7 @@ mock-internal:
 	@$(MOCK) --dir=./internal --all --output=./$(MOCKS)
 
 mock-pkg:
-	@$(MOCK) --dir=./$(ADLR_SRC) --all --output=./$(MOCKS)
+	@$(MOCK) --dir=./pkg --all --output=./$(MOCKS)
 
 # building
 bin:
