@@ -8,3 +8,5 @@ require (
 	github.com/spf13/cobra v1.1.3
 	github.com/stretchr/testify v1.7.0
 )
+
+retract v1.0.0 // Published accidentally
