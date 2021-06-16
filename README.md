@@ -111,6 +111,20 @@ auditor := adlr.MakeAuditor(whitelist)
 err = auditor.Audit(locks...)
 ...
 ```
+# Development
+Contributions are welcome! Contact BLOCKY through our website [www.blocky.rocks](www.blocky.rocks) or email **ian@blocky.rocks**
 
-# Dependencies for testing
+## Branch Practices
+### Branches
++ **feature/**: Used for adding features, increments semver x.**y**.z
++ **bugfix/**: Used for fixing bugs, increments semver x.y.**z**
++ **chore/**: Used for small chores, tasks, etc and does not usually result in a semver increase/release
+
+### Main & Develop
+Due to recent errors in PR merges to the main branch, *all PR's must initially merge into the* **develop branch**, **checked for bugs**, *then a PR merging* **develop's** *changes into* **main**
+
+### Squash Merging
+We use squash merging for PR's. Therefore, not all of your commits are required to pass testing **besides your the last commit**
+
+## Dependencies for testing
 Mockery - mockery v1 is used to autogenerate code for golang interfaces. Mocked interfaces are outputted to the `internal/mocks/` folder. The golang binary tool can be downloaded from https://github.com/vektra/mockery
