@@ -8,6 +8,7 @@ import (
 
 	"github.com/blocky/adlr"
 	"github.com/blocky/adlr/pkg/gotool"
+	"github.com/blocky/adlr/pkg/reader"
 )
 
 type IntegrationTestSuite struct {
@@ -30,28 +31,35 @@ func (suite IntegrationTestSuite) TestADLR() {
 
 	parser := gotool.MakeBuildListParser()
 	mods, err := parser.ParseModuleList(buildlist)
-	suite.Nil(err)
+	suite.Require().NoError(err)
 
 	direct := gotool.FilterDirectImportModules(mods)
 	prospects := adlr.MakeProspects(direct...)
 
 	prospector := adlr.MakeProspector()
 	mines, err := prospector.Prospect(prospects...)
-	suite.Nil(err)
+	suite.Require().NoError(err)
 
-	miner := adlr.MakeMiner()
+	confidence := float32(0.85)
+	lead := float32(0.05)
+	reader := reader.NewLimitedReaderFromRaw(500 * reader.Kilobyte)
+	miner := adlr.MakeMinerFromRaw(confidence, lead, reader)
 	locks, err := miner.Mine(mines...)
+	suite.Require().NoError(err)
 
 	licenselock := adlr.MakeLicenseLockManager("./")
 	err = licenselock.Lock(locks...)
-	defer os.Remove("./" + "license.lock")
-	suite.Nil(err)
+	defer func() {
+		err := os.Remove("./" + "license.lock")
+		suite.Require().NoError(err)
+	}()
+	suite.Require().NoError(err)
 
 	locks, err = licenselock.Read()
-	suite.Nil(err)
+	suite.Require().NoError(err)
 
 	whitelist := adlr.MakeWhitelist(adlr.DefaultWhitelist)
 	auditor := adlr.MakeAuditor(whitelist)
 	err = auditor.Audit(locks...)
-	suite.Nil(err)
+	suite.Require().NoError(err)
 }
