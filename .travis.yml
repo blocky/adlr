@@ -2,7 +2,7 @@ language: go
 os: linux
 go_import_path: github.com/blocky/adlr
 go:
-  - "1.16"
+  - "1.19"
 
 script:
   - make test
