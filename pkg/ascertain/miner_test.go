@@ -124,7 +124,7 @@ func TestLicenseMinerDetermineMatch(t *testing.T) {
 		m, err := miner.DetermineMatch(matches...)
 
 		assert.Nil(t, err)
-		assert.Equal(t, m, matches[0])
+		assert.Equal(t, matches[0], m)
 	})
 	t.Run("conf error on single match", func(t *testing.T) {
 		matches := []licensedb.Match{
@@ -149,7 +149,33 @@ func TestLicenseMinerDetermineMatch(t *testing.T) {
 		m, err := miner.DetermineMatch(matches...)
 
 		assert.Nil(t, err)
-		assert.Equal(t, m, matches[0])
+		assert.Equal(t, matches[0], m)
+	})
+	t.Run("happy path multiple match same confidence", func(t *testing.T) {
+		matches := []licensedb.Match{
+			licensedb.Match{Confidence: 0.9, License: "MIT"},
+			licensedb.Match{Confidence: 0.9, License: "MIT-variant-2"},
+		}
+		mins := ascertain.Minimums{Confidence: 0.8, Lead: 0.1}
+		reader := reader.NewLimitedReader()
+		miner := ascertain.MakeLicenseMinerFromRaw(mins, reader)
+		m, err := miner.DetermineMatch(matches...)
+
+		assert.Nil(t, err)
+		assert.Equal(t, matches[0], m)
+	})
+	t.Run("happy path multiple match same confidence similar SPDX", func(t *testing.T) {
+		matches := []licensedb.Match{
+			licensedb.Match{Confidence: 0.9, License: "MIT-variant-2"},
+			licensedb.Match{Confidence: 0.9, License: "MIT-variant-1"},
+		}
+		mins := ascertain.Minimums{Confidence: 0.8, Lead: 0.1}
+		reader := reader.NewLimitedReader()
+		miner := ascertain.MakeLicenseMinerFromRaw(mins, reader)
+		m, err := miner.DetermineMatch(matches...)
+
+		assert.Nil(t, err)
+		assert.Equal(t, matches[1], m)
 	})
 	t.Run("conf error on multiple match", func(t *testing.T) {
 		matches := []licensedb.Match{
