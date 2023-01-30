@@ -118,13 +118,11 @@ func (lm LicenseMiner) DetermineMatch(
 		}
 		return m, nil
 	}
-	// licensedb matches are sorted by decreasing confidence
-	m1, m2 := matches[0], matches[1]
-	err := lm.DetermineMultipleMatch(m1, m2)
+	match, err := lm.DetermineMultipleMatch(matches[0], matches[1])
 	if err != nil {
 		return licensedb.Match{}, err
 	}
-	return m1, nil
+	return match, nil
 }
 
 // Determine if the singular licensedb.Match meets confidence
@@ -143,16 +141,52 @@ func (lm LicenseMiner) DetermineSingleMatch(
 // requirements to beat the secondary licensedb.Match
 func (lm LicenseMiner) DetermineMultipleMatch(
 	m1, m2 licensedb.Match,
-) error {
-	err := lm.MeetsMinimumConfidence(m1.Confidence)
-	if err != nil {
-		return err
+) (licensedb.Match, error) {
+
+	var primary, secondary licensedb.Match
+	switch compare(m1.Confidence, m2.Confidence) {
+	case 1:
+		primary, secondary = m1, m2
+	case -1:
+		primary, secondary = m2, m1
+	default:
+		primary = lm.DetermineMatchFromEqualConfidences(m1, m2)
+		err := lm.MeetsMinimumConfidence(primary.Confidence)
+		if err != nil {
+			return licensedb.Match{}, err
+		}
+		return primary, nil
 	}
-	err = lm.MeetsMinimumLead(m1.Confidence, m2.Confidence)
+
+	err := lm.MeetsMinimumConfidence(primary.Confidence)
 	if err != nil {
-		return err
+		return licensedb.Match{}, err
 	}
-	return nil
+	err = lm.MeetsMinimumLead(primary.Confidence, secondary.Confidence)
+	if err != nil {
+		return licensedb.Match{}, err
+	}
+	return primary, nil
+}
+
+func (lm LicenseMiner) DetermineMatchFromEqualConfidences(
+	m1, m2 licensedb.Match,
+) (primary licensedb.Match) {
+	// return shorter license - longer licenses are usually variants
+	diff := len(m1.License) - len(m2.License)
+	switch {
+	case diff > 0:
+		return m2
+	case diff < 0:
+		return m1
+	}
+	// licenses are equal length - return first license lexographically
+	if m1.License < m2.License {
+		return m1
+	} else if m1.License == m2.License {
+		return m1
+	}
+	return m2
 }
 
 // Determine whether a probable license confidence meets minimum
@@ -176,6 +210,15 @@ func (lm LicenseMiner) MeetsMinimumLead(
 		return nil
 	}
 	return &MinLeadError{a, b, c}
+}
+
+func compare(a, b float32) int {
+	if a > b {
+		return 1
+	} else if equalTo(a, b) {
+		return 0
+	}
+	return -1
 }
 
 func greaterThan(a, b float32) bool {
