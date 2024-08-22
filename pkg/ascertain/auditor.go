@@ -23,20 +23,23 @@ func MakeLicenseAuditor(
 // non-whitelist-license DependencyLocks for error printout
 func (auditor LicenseAuditor) Audit(
 	locks ...DependencyLock,
-) error {
+) ([]DependencyLock, error) {
 	var auditErrs []DependencyLock
 
+	var verified = make([]DependencyLock, 0)
 	for _, lock := range locks {
 		err := auditor.AuditLock(lock)
 		if err != nil {
 			lock.AddErrStr(err.Error())
 			auditErrs = append(auditErrs, lock)
+			continue
 		}
+		verified = append(verified, lock)
 	}
 	if len(auditErrs) != 0 {
-		return &LicenseAuditError{auditErrs}
+		return verified, &LicenseAuditError{auditErrs}
 	}
-	return nil
+	return verified, nil
 }
 
 // Audit a DependencyLock's license type against the LicenseWhitelist

@@ -143,7 +143,7 @@ func MakeWhitelist(
 // against a license whitelist, returning an error of all offending
 // DependencyLocks and their non-whitelisted licenses
 type Auditor interface {
-	Audit(...DependencyLock) error
+	Audit(...DependencyLock) ([]DependencyLock, error)
 }
 
 // MakeAuditor creates an Auditor with a specified Whitelist
