@@ -33,7 +33,7 @@ func MakeLicenseMiner() LicenseMiner {
 		Confidence: Confidence,
 		Lead:       Lead,
 	}
-	reader := reader.NewLimitedReaderFromRaw(reader.Kilobyte * 100)
+	reader := reader.NewLimitedReaderFromRaw(reader.Kilobyte * 1000)
 	return MakeLicenseMinerFromRaw(mins, reader)
 }
 
@@ -55,19 +55,20 @@ func (lm LicenseMiner) Mine(
 ) ([]DependencyLock, error) {
 	var mineErrs []Mine
 
-	var locks = make([]DependencyLock, len(mines))
-	for i, mine := range mines {
+	var locks = make([]DependencyLock, 0)
+	for _, mine := range mines {
 		license, err := lm.MineLicense(mine)
 
 		if err != nil {
 			mine.AddError(err)
 			mineErrs = append(mineErrs, mine)
+			continue
 		}
-		locks[i] = MakeDependencyLock(
+		locks = append(locks, MakeDependencyLock(
 			mine.Name,
 			mine.Version,
 			license,
-		)
+		))
 	}
 	if len(mineErrs) != 0 {
 		return locks, &LicenseMineError{mineErrs}

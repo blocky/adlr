@@ -27,20 +27,21 @@ func (lp LicenseProspector) Prospect(
 	// compute results concurrently; stable algorithm
 	results := lp.ProspectLicenses(paths...)
 
-	var mined = make([]Mine, len(prospects))
+	var mined = make([]Mine, 0)
 	for i, prospect := range prospects {
 		var result = results[i]
 
 		if result.ErrStr != "" { // could not find dir or license files
 			prospect.AddErrStr(result.ErrStr)
 			prospectErrs = append(prospectErrs, prospect)
+			continue
 		}
-		mined[i] = MakeMine(
+		mined = append(mined, MakeMine(
 			prospect.Name,
 			prospect.Dir,
 			prospect.Version,
 			result.Matches,
-		)
+		))
 	}
 	if len(prospectErrs) != 0 {
 		return mined, &LicenseProspectingError{prospectErrs}
