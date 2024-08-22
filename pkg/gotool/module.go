@@ -27,22 +27,15 @@ func (m *Module) UnmarshalJSON(bytes []byte) error {
 	return json.Unmarshal(bytes, &tmp)
 }
 
-// Filter out main, replaced, and indirect modules from
-// a buildlist. Return a new list of directly imported modules
-func FilterDirectImportModules(
+func FilterImportModules(
 	modules []Module,
 ) []Module {
 	var direct []Module
 	for _, m := range modules {
 		if m.Main == true {
 			continue
-		} else if m.Replace != nil {
-			// Any modules replaced in a go.mod with
-			// the keyword "Replace" will be caught here
-			continue
-		} else if m.Indirect == false {
-			direct = append(direct, m)
 		}
+		direct = append(direct, m)
 	}
 	return direct
 }
