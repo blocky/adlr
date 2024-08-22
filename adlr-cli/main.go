@@ -9,11 +9,7 @@ import (
 //go:embed version
 var Version string
 
-//go:embed license.lock
-var DependencyRequirements []byte
-
 func main() {
 	cmd.Version = Version
-	cmd.DependencyRequirements = DependencyRequirements
 	cmd.Execute()
 }
