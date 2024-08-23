@@ -10,8 +10,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var BuildListPath string
-var LocatedPath string
+var BuildlistFile string
+var LocatedFile string
 
 var locateCmd = &cobra.Command{
 	Use:   "locate",
@@ -19,29 +19,38 @@ var locateCmd = &cobra.Command{
 	Long: `Outputs a file containing located licenses. If there was trouble locating
 one or more licenses, an error is returned with the list of missing licenses`,
 	Run: func(cmd *cobra.Command, args []string) {
-		buildlist, err := os.Open(BuildListPath)
-		defer buildlist.Close()
+		err := Locate(BuildlistFile, LocatedFile)
 		ExitOnErr(err)
-		Locate(buildlist)
 	},
 }
 
 func init() {
 	locateCmd.Flags().StringVarP(
-		&BuildListPath, "buildlist", "b", "./buildlist.json",
+		&BuildlistFile, "buildlist", "b", "./buildlist.json",
 		"Path of module build list in json format",
 	)
 	locateCmd.Flags().StringVarP(
-		&LocatedPath, "located", "l", "./located-licenses.json",
+		&LocatedFile, "located", "l", "./located-licenses.json",
 		"Output file containing located licenses",
 	)
 	licenseCmd.AddCommand(locateCmd)
 }
 
-func Locate(buildlist *os.File) {
+func Locate(
+	buildlistFile string,
+	locatedFile string,
+) error {
+	buildlist, err := os.Open(buildlistFile)
+	defer buildlist.Close()
+	if err != nil {
+		return fmt.Errorf("opening buildlist file: %w", err)
+	}
+
 	parser := gotool.MakeBuildListParser()
 	mods, err := parser.ParseModuleList(buildlist)
-	ExitOnErr(err)
+	if err != nil {
+		return fmt.Errorf("parsing module list: %w", err)
+	}
 
 	missing := ""
 	prospects := adlr.MakeProspects(gotool.FilterImportModules(mods)...)
@@ -52,18 +61,16 @@ func Locate(buildlist *os.File) {
 
 	bytes, err := json.MarshalIndent(located, "", "\t")
 	if err != nil {
-		fmt.Printf("marshaling prospects: %w", err)
-		os.Exit(1)
+		return fmt.Errorf("marshaling located list: %w", err)
 	}
 
-	err = WriteFile(LocatedPath, bytes)
+	err = WriteFile(locatedFile, bytes)
 	if err != nil {
-		fmt.Printf("saving found: %w", err)
-		os.Exit(1)
+		return fmt.Errorf("writing located file: %w", err)
 	}
 
 	if missing != "" {
-		fmt.Printf("%s", missing)
-		os.Exit(1)
+		return fmt.Errorf("%s", missing)
 	}
+	return nil
 }

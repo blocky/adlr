@@ -9,7 +9,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var IdentifiedPath string
+var IdentifiedFile string
 
 var identifyCmd = &cobra.Command{
 	Use:   "identify",
@@ -17,33 +17,39 @@ var identifyCmd = &cobra.Command{
 	Long: `Outputs a file containing identified licenses and one
 containing dependencies for which the license type could not be identified`,
 	Run: func(cmd *cobra.Command, args []string) {
-		locatedlist, err := os.Open(LocatedPath)
-		defer locatedlist.Close()
+		err := Identify(LocatedFile, IdentifiedFile)
 		ExitOnErr(err)
-		Identify(locatedlist)
 	},
 }
 
 func init() {
 	identifyCmd.Flags().StringVarP(
-		&LocatedPath, "located", "l", "./located-licenses.json",
+		&LocatedFile, "located", "l", "./located-licenses.json",
 		"Input file containing located licenses",
 	)
 	identifyCmd.Flags().StringVarP(
-		&IdentifiedPath, "identified", "i", "./identified-licenses.json",
+		&IdentifiedFile, "identified", "i", "./identified-licenses.json",
 		"Output file containing identified licenses",
 	)
 
 	licenseCmd.AddCommand(identifyCmd)
 }
 
-func Identify(locatedlist *os.File) {
+func Identify(
+	locatedFile string,
+	identifiedFile string,
+) error {
+	locatedlist, err := os.Open(locatedFile)
+	defer locatedlist.Close()
+	if err != nil {
+		return fmt.Errorf("opening located file: %w", err)
+	}
+
 	decoder := json.NewDecoder(locatedlist)
 	var located []adlr.Mine
-	err := decoder.Decode(&located)
+	err = decoder.Decode(&located)
 	if err != nil {
-		fmt.Printf("decoding located: %w", err)
-		os.Exit(1)
+		return fmt.Errorf("decoding located list: %w", err)
 	}
 
 	unidentified := ""
@@ -54,18 +60,16 @@ func Identify(locatedlist *os.File) {
 
 	bytes, err := json.MarshalIndent(identified, "", "\t")
 	if err != nil {
-		fmt.Printf("marshaling identified: %w", err)
-		os.Exit(1)
+		return fmt.Errorf("marshaling identified list: %w", err)
 	}
 
-	err = WriteFile(IdentifiedPath, bytes)
+	err = WriteFile(identifiedFile, bytes)
 	if err != nil {
-		fmt.Printf("saving identified: %w", err)
-		os.Exit(1)
+		return fmt.Errorf("writing identified file: %w", err)
 	}
 
 	if unidentified != "" {
-		fmt.Printf("%s", unidentified)
-		os.Exit(1)
+		return fmt.Errorf("%s", unidentified)
 	}
+	return nil
 }

@@ -9,7 +9,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-var VerifiedPath string
+var VerifiedFile string
 var Whitelist []string
 
 var verifyCmd = &cobra.Command{
@@ -17,20 +17,18 @@ var verifyCmd = &cobra.Command{
 	Short: "Verify dependency licenses against whitelisted license types",
 	Long:  `Outputs a file containing licenses verified against a whitelist`,
 	Run: func(cmd *cobra.Command, args []string) {
-		identifiedList, err := os.Open(IdentifiedPath)
-		defer identifiedList.Close()
+		err := Verify(IdentifiedFile, VerifiedFile)
 		ExitOnErr(err)
-		Verify(identifiedList)
 	},
 }
 
 func init() {
 	verifyCmd.Flags().StringVarP(
-		&IdentifiedPath, "identified", "i", "./identified-licenses.json",
+		&IdentifiedFile, "identified", "i", "./identified-licenses.json",
 		"Input file containing identified licenses",
 	)
 	verifyCmd.Flags().StringVarP(
-		&VerifiedPath, "verified", "v", "./verified-licenses.json",
+		&VerifiedFile, "verified", "v", "./verified-licenses.json",
 		"Output file containing verified licenses",
 	)
 	verifyCmd.Flags().StringSliceVarP(
@@ -40,13 +38,21 @@ func init() {
 	licenseCmd.AddCommand(verifyCmd)
 }
 
-func Verify(identifiedList *os.File) {
+func Verify(
+	identifiedFile string,
+	verifiedFile string,
+) error {
+	identifiedList, err := os.Open(identifiedFile)
+	defer identifiedList.Close()
+	if err != nil {
+		return fmt.Errorf("opening identified file: %w", err)
+	}
+
 	decoder := json.NewDecoder(identifiedList)
 	var identified []adlr.DependencyLock
-	err := decoder.Decode(&identified)
+	err = decoder.Decode(&identified)
 	if err != nil {
-		fmt.Printf("decoding identified: %w", err)
-		os.Exit(1)
+		return fmt.Errorf("decoding identified list: %w", err)
 	}
 
 	invalid := ""
@@ -58,18 +64,16 @@ func Verify(identifiedList *os.File) {
 
 	bytes, err := json.MarshalIndent(verified, "", "\t")
 	if err != nil {
-		fmt.Printf("marshaling verified: %w", err)
-		os.Exit(1)
+		return fmt.Errorf("marshaling verified list: %w", err)
 	}
 
-	err = WriteFile(VerifiedPath, bytes)
+	err = WriteFile(verifiedFile, bytes)
 	if err != nil {
-		fmt.Printf("saving verified: %w", err)
-		os.Exit(1)
+		return fmt.Errorf("writing verified file: %w", err)
 	}
 
 	if invalid != "" {
-		fmt.Printf("%s", invalid)
-		os.Exit(1)
+		return fmt.Errorf("%s", invalid)
 	}
+	return nil
 }
