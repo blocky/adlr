@@ -1,0 +1,145 @@
+[
+	{
+		"Name": "github.com/ProtonMail/go-crypto",
+		"Dir": "/home/bear/go/pkg/mod/github.com/!proton!mail/go-crypto@v0.0.0-20230124153114-0acdc8ae009b",
+		"Version": "v0.0.0-20230124153114-0acdc8ae009b",
+		"ErrStr": "",
+		"Matches": [
+			{
+				"license": "BSD-3-Clause",
+				"confidence": 0.9306931,
+				"file": "LICENSE"
+			},
+			{
+				"license": "BSD-Source-Code",
+				"confidence": 0.8844221,
+				"file": "LICENSE"
+			}
+		]
+	},
+	{
+		"Name": "github.com/armon/go-socks5",
+		"Dir": "/home/bear/go/pkg/mod/github.com/armon/go-socks5@v0.0.0-20160902184237-e75332964ef5",
+		"Version": "v0.0.0-20160902184237-e75332964ef5",
+		"ErrStr": "",
+		"Matches": [
+			{
+				"license": "MIT",
+				"confidence": 0.9096774,
+				"file": "LICENSE"
+			},
+			{
+				"license": "MIT-feh",
+				"confidence": 0.78947365,
+				"file": "LICENSE"
+			},
+			{
+				"license": "MIT-advertising",
+				"confidence": 0.7565789,
+				"file": "LICENSE"
+			}
+		]
+	},
+	{
+		"Name": "github.com/davecgh/go-spew",
+		"Dir": "/home/bear/go/pkg/mod/github.com/davecgh/go-spew@v1.1.1",
+		"Version": "v1.1.1",
+		"ErrStr": "",
+		"Matches": [
+			{
+				"license": "0BSD",
+				"confidence": 0.9326923,
+				"file": "LICENSE"
+			}
+		]
+	},
+	{
+		"Name": "github.com/gliderlabs/ssh",
+		"Dir": "/home/bear/go/pkg/mod/github.com/gliderlabs/ssh@v0.3.5",
+		"Version": "v0.3.5",
+		"ErrStr": "",
+		"Matches": [
+			{
+				"license": "BSD-3-Clause",
+				"confidence": 0.9306931,
+				"file": "LICENSE"
+			},
+			{
+				"license": "BSD-2-Clause",
+				"confidence": 0.84455955,
+				"file": "LICENSE"
+			},
+			{
+				"license": "BSD-3-Clause-No-Military-License",
+				"confidence": 0.8019802,
+				"file": "LICENSE"
+			},
+			{
+				"license": "BSD-3-Clause-Clear",
+				"confidence": 0.79702973,
+				"file": "LICENSE"
+			},
+			{
+				"license": "BSD-3-Clause-No-Nuclear-License-2014",
+				"confidence": 0.7871287,
+				"file": "LICENSE"
+			}
+		]
+	},
+	{
+		"Name": "github.com/go-enry/go-license-detector/v4",
+		"Dir": "/home/bear/go/pkg/mod/github.com/go-enry/go-license-detector/v4@v4.3.1-0.20221011194415-18a439e5437c",
+		"Version": "v4.3.1-0.20221011194415-18a439e5437c",
+		"ErrStr": "",
+		"Matches": [
+			{
+				"license": "Apache-2.0",
+				"confidence": 0.9864952,
+				"file": "LICENSE.md"
+			},
+			{
+				"license": "ECL-2.0",
+				"confidence": 0.90276885,
+				"file": "LICENSE.md"
+			},
+			{
+				"license": "SHL-0.51",
+				"confidence": 0.8121369,
+				"file": "LICENSE.md"
+			},
+			{
+				"license": "SHL-0.5",
+				"confidence": 0.81149125,
+				"file": "LICENSE.md"
+			}
+		]
+	},
+	{
+		"Name": "github.com/pkg/errors",
+		"Dir": "/home/bear/go/pkg/mod/github.com/pkg/errors@v0.9.1",
+		"Version": "v0.9.1",
+		"ErrStr": "",
+		"Matches": [
+			{
+				"license": "BSD-2-Clause",
+				"confidence": 1,
+				"file": "LICENSE"
+			},
+			{
+				"license": "BSD-1-Clause",
+				"confidence": 0.8508287,
+				"file": "LICENSE"
+			},
+			{
+				"license": "BSD-3-Clause",
+				"confidence": 0.8369565,
+				"file": "LICENSE"
+			},
+			{
+				"license": "BSD-2-Clause-Views",
+				"confidence": 0.8152174,
+				"file": "LICENSE"
+			}
+		]
+	}
+]

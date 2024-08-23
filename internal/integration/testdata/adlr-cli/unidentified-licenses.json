@@ -1,0 +1,20 @@
+error license mining: [
+ {
+  "Name": "github.com/ProtonMail/go-crypto",
+  "Dir": "/home/bear/go/pkg/mod/github.com/!proton!mail/go-crypto@v0.0.0-20230124153114-0acdc8ae009b",
+  "Version": "v0.0.0-20230124153114-0acdc8ae009b",
+  "ErrStr": "does not meet minimum lead: 0.930693 - 0.884422 lt 0.070000",
+  "Matches": [
+   {
+    "license": "BSD-3-Clause",
+    "confidence": 0.9306931,
+    "file": "LICENSE"
+   },
+   {
+    "license": "BSD-Source-Code",
+    "confidence": 0.8844221,
+    "file": "LICENSE"
+   }
+  ]
+ }
+]
