@@ -1,7 +1,0 @@
-{
-	"Path": "bky.sh/pallets/client",
-	"Main": true,
-	"Dir": "/home/user/Work/bky.sh/pallets/client",
-	"GoMod": "/home/user/Work/bky.sh/pallets/client/go.mod",
-	"GoVersion": "1.14"
-}
