@@ -16,8 +16,7 @@ var Lead float32
 var identifyCmd = &cobra.Command{
 	Use:   "identify",
 	Short: "Identify dependency license types",
-	Long: `Outputs a file containing identified licenses and one
-containing dependencies for which the license type could not be identified`,
+	Long:  "Outputs a file containing identified licenses",
 	Run: func(cmd *cobra.Command, args []string) {
 		err := Identify(LocatedFile, IdentifiedFile)
 		ExitOnErr(err)

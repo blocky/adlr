@@ -13,7 +13,7 @@ var Whitelist []string
 var verifyCmd = &cobra.Command{
 	Use:   "verify",
 	Short: "Verify dependency licenses against whitelisted license types",
-	Long:  `Outputs a file containing licenses verified against a whitelist`,
+	Long:  "Outputs a file containing licenses verified against a whitelist",
 	Run: func(cmd *cobra.Command, args []string) {
 		err := Verify(IdentifiedFile, VerifiedFile)
 		ExitOnErr(err)
