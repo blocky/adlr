@@ -51,6 +51,7 @@ func TestADLRCLI_Locate(t *testing.T) {
 		for _, want := range wantLocated {
 			got, ok := gotMap[want.Name]
 			assert.True(t, ok)
+			assert.Equal(t, want.Name, got.Name)
 			assert.Equal(t, want.Version, got.Version)
 			assert.Equal(t, want.ErrStr, got.ErrStr)
 		}
