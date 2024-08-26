@@ -45,7 +45,7 @@ func Locate(
 ) error {
 	buildlist, err := os.ReadFile(buildlistFile)
 	if err != nil {
-		return fmt.Errorf("opening buildlist file: %w", err)
+		return fmt.Errorf("reading buildlist file: %w", err)
 	}
 
 	parser := gotool.MakeBuildListParser()
