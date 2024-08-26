@@ -30,7 +30,7 @@ jobs:
         with:
           go: 'true'
 
-      - name: Run Unit Tests
+      - name: Run Integration Test
         run: make test-integration
 
   lint:
