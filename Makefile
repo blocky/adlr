@@ -10,12 +10,11 @@ INTEGRATION=internal/integration
 TIMEOUT=5m
 
 ADLR_SRC=pkg
-ADLR_MAIN=adlrtool
+ADLR_MAIN=adlr-cli
 
 BIN=bin
 SCRIPTS=sh
 
-LICENSELOCK=$(ADLR_MAIN)/license.lock
 BUILDLIST=buildlist.json
 VERSION=$(ADLR_MAIN)/version
 
@@ -36,17 +35,12 @@ build: build-linux-amd64
 build-tmp: bin # build tmp exec to perform adlr steps
 	@$(GOBUILD) -o $(BIN)/tmp ./$(ADLR_MAIN)
 
-build-linux-amd64: licenselock version
+build-linux-amd64: version
 	@$(SCRIPTS)/build.sh \
 	adlr linux amd64 ./$(ADLR_MAIN) ./$(BIN)
 
 buildlist: tidy
 	@$(GOLIST) -m -json all > $(BUILDLIST)
-
-licenselock: build-tmp buildlist
-	@$(BIN)/tmp evaluate \
-	--buildlist=$(BUILDLIST) \
-	--dir=$(ADLR_MAIN)
 
 lint:
 	@golangci-lint run --config ./golangci.yaml
