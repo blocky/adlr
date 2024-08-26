@@ -12,6 +12,7 @@ import (
 
 var BuildlistFile string
 var LocatedFile string
+var ExemptMods []string
 
 var locateCmd = &cobra.Command{
 	Use:   "locate",
@@ -33,6 +34,9 @@ func init() {
 		&LocatedFile, "located", "l", "./located-licenses.json",
 		"Output file containing located licenses",
 	)
+	locateCmd.Flags().StringSliceVarP(
+		&ExemptMods, "exempt-modules", "e", []string{},
+		"Comma separated list of modules to ignore during license location")
 	licenseCmd.AddCommand(locateCmd)
 }
 
@@ -53,7 +57,9 @@ func Locate(
 	}
 
 	missing := ""
-	prospects := adlr.MakeProspects(gotool.FilterImportModules(mods)...)
+	mods = gotool.FilterImportModules(mods)
+	mods = gotool.RemoveExemptModules(mods, ExemptMods)
+	prospects := adlr.MakeProspects(mods...)
 	located, err := adlr.MakeProspector().Prospect(prospects...)
 	if err != nil {
 		missing = err.Error()

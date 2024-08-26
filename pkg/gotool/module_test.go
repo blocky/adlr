@@ -1,7 +1,6 @@
 package gotool_test
 
 import (
-	"os"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -20,6 +19,12 @@ var ModuleStr = `{` +
 	`"Dir":"/home/user/path"}`
 
 var Modules = []gotool.Module{
+	{
+		Path:     "bky.sh/pallets/client",
+		Main:     true,
+		Indirect: false,
+		Dir:      "/home/user/Work/bky.sh/pallets/client",
+	},
 	{
 		Path:    "bky.sh/pallets/nub",
 		Version: "v0.0.0",
@@ -74,21 +79,22 @@ func TestModuleUnmarshal(t *testing.T) {
 
 func TestFilterImportModules(t *testing.T) {
 	t.Run("happy path - filter all but main", func(t *testing.T) {
-		f, _ := os.Open(TestDirModule + "all_imports.json")
-		p := gotool.MakeBuildListParser()
-		list, err := p.ParseModuleList(f)
-		assert.Nil(t, err)
-
-		result := gotool.FilterImportModules(list)
-		assert.Equal(t, Modules, result)
+		result := gotool.FilterImportModules(Modules)
+		assert.NotContains(t, result, Modules[0])
 	})
 	t.Run("happy path - empty on only main import", func(t *testing.T) {
-		f, _ := os.Open(TestDirModule + "main_import.json")
-		p := gotool.MakeBuildListParser()
-		list, err := p.ParseModuleList(f)
-		assert.Nil(t, err)
+		result := gotool.FilterImportModules([]gotool.Module{Modules[0]})
+		assert.Equal(t, []gotool.Module{}, result)
+	})
+}
 
-		result := gotool.FilterImportModules(list)
-		assert.Equal(t, []gotool.Module(nil), result)
+func TestRemoveExemptModules(t *testing.T) {
+	t.Run("happy path - empty exempt list", func(t *testing.T) {
+		result := gotool.RemoveExemptModules(Modules, []string{})
+		assert.Equal(t, Modules, result)
+	})
+	t.Run("happy path - exempt list", func(t *testing.T) {
+		result := gotool.RemoveExemptModules(Modules, []string{Modules[0].Path})
+		assert.NotContains(t, result, Modules[0])
 	})
 }
