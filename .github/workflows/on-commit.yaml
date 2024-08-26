@@ -1,4 +1,4 @@
-name: On Every Commit
+name: On Commit
 
 on: push
 
