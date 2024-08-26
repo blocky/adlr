@@ -31,7 +31,9 @@ jobs:
           go: 'true'
 
       - name: Run Integration Test
-        run: make test-integration
+        run: |
+          make buildlist
+          make test-integration
 
   lint:
     runs-on: ubuntu-latest
