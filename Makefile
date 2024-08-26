@@ -29,13 +29,16 @@ clean:
 	@rm -rf $(BUILDLIST)
 	@rm -rf $(BIN)
 
+lint:
+	@golangci-lint run --config ./golangci.yaml
+
 # mock autogeneration for interface testing
 mock: mock-internal mock-pkg
 
-mock-internal:
+mock-internal: tidy
 	@$(MOCK) --dir=./internal --all --output=./$(MOCKS)
 
-mock-pkg:
+mock-pkg: tidy
 	@$(MOCK) --dir=./pkg --all --output=./$(MOCKS)
 
 # building
@@ -51,7 +54,7 @@ build-linux-amd64: licenselock version
 	@$(SCRIPTS)/build.sh \
 	adlr linux amd64 ./$(ADLR_MAIN) ./$(BIN)
 
-buildlist:
+buildlist: tidy
 	@$(GOLIST) -m -json all > $(BUILDLIST)
 
 licenselock: build-tmp buildlist
@@ -65,9 +68,11 @@ version:
 # testing
 test: test-unit test-integration
 
-test-integration: buildlist
-	@$(GOTEST) -timeout=$(TIMEOUT) ./$(INTEGRATION)/... \
-	&& $(GOTIDY)
+test-integration: tidy buildlist
+	@$(GOTEST) -timeout=$(TIMEOUT) ./$(INTEGRATION)/...
 
-test-unit:
-	@$(GOTEST) -short ./$(ADLR_SRC)/... && $(GOTIDY)
+test-unit: tidy
+	@$(GOTEST) -short ./$(ADLR_SRC)/...
+
+tidy:
+	$(GOTIDY)
