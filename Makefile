@@ -11,8 +11,6 @@ TIMEOUT=5m
 
 ADLR_SRC=pkg
 ADLR_MAIN=adlrtool
-MOCK=mockery
-MOCKS=internal/mocks
 
 BIN=bin
 SCRIPTS=sh
@@ -28,18 +26,6 @@ default: test
 clean:
 	@rm -rf $(BUILDLIST)
 	@rm -rf $(BIN)
-
-lint:
-	@golangci-lint run --config ./golangci.yaml
-
-# mock autogeneration for interface testing
-mock: mock-internal mock-pkg
-
-mock-internal: tidy
-	@$(MOCK) --dir=./internal --all --output=./$(MOCKS)
-
-mock-pkg: tidy
-	@$(MOCK) --dir=./pkg --all --output=./$(MOCKS)
 
 # building
 bin:
@@ -61,6 +47,9 @@ licenselock: build-tmp buildlist
 	@$(BIN)/tmp evaluate \
 	--buildlist=$(BUILDLIST) \
 	--dir=$(ADLR_MAIN)
+
+lint:
+	@golangci-lint run --config ./golangci.yaml
 
 version:
 	@printf $(GIT_TAG) > $(VERSION)
