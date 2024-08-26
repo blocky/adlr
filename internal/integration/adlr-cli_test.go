@@ -83,13 +83,13 @@ func TestADLRCLI_Identify(t *testing.T) {
 		require.NoError(t, err)
 		assert.Equal(t, gotIdentified, wantIdentified)
 	})
-	t.Run("error opening located file", func(t *testing.T) {
+	t.Run("error reading located file", func(t *testing.T) {
 		err := cmd.Identify("nonexistent-located.json", gotIdentifiedFile)
-		assert.ErrorContains(t, err, "opening located file")
+		assert.ErrorContains(t, err, "reading bytes")
 	})
-	t.Run("error decoding located list", func(t *testing.T) {
+	t.Run("error unmarshaling located list", func(t *testing.T) {
 		err := cmd.Identify(BuildListFile, gotIdentifiedFile)
-		assert.ErrorContains(t, err, "decoding located list")
+		assert.ErrorContains(t, err, "unmarshaling bytes")
 	})
 	t.Run("error writing identified file", func(t *testing.T) {
 		err := cmd.Identify(LocatedFile, "nonexistent/dir/identified.json")
@@ -114,13 +114,13 @@ func TestADLRCLI_Verify(t *testing.T) {
 		require.NoError(t, err)
 		assert.Equal(t, gotVerified, wantVerified)
 	})
-	t.Run("error opening identified file", func(t *testing.T) {
+	t.Run("error reading identified file", func(t *testing.T) {
 		err := cmd.Verify("nonexistent-identified.json", gotVerifiedFile)
-		assert.ErrorContains(t, err, "opening identified file")
+		assert.ErrorContains(t, err, "reading identified file")
 	})
-	t.Run("error decoding identified list", func(t *testing.T) {
+	t.Run("error unmarshaling identified list", func(t *testing.T) {
 		err := cmd.Verify(BuildListFile, gotVerifiedFile)
-		assert.ErrorContains(t, err, "decoding identified list")
+		assert.ErrorContains(t, err, "unmarshaling bytes")
 	})
 	t.Run("error writing verified file", func(t *testing.T) {
 		err := cmd.Verify(IdentifiedFile, "nonexistent/dir/verified.json")

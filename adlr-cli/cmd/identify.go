@@ -1,9 +1,7 @@
 package cmd
 
 import (
-	"encoding/json"
 	"fmt"
-	"os"
 
 	"github.com/blocky/adlr"
 	"github.com/blocky/adlr/pkg/ascertain"
@@ -49,17 +47,10 @@ func Identify(
 	locatedFile string,
 	identifiedFile string,
 ) error {
-	locatedlist, err := os.Open(locatedFile)
-	defer locatedlist.Close()
-	if err != nil {
-		return fmt.Errorf("opening located file: %w", err)
-	}
-
-	decoder := json.NewDecoder(locatedlist)
 	var located []adlr.Mine
-	err = decoder.Decode(&located)
+	err := ReadJSONFile(locatedFile, &located)
 	if err != nil {
-		return fmt.Errorf("decoding located list: %w", err)
+		return fmt.Errorf("reading located file: %w", err)
 	}
 
 	unidentified := ""
@@ -69,12 +60,7 @@ func Identify(
 		unidentified = err.Error()
 	}
 
-	bytes, err := json.MarshalIndent(identified, "", "\t")
-	if err != nil {
-		return fmt.Errorf("marshaling identified list: %w", err)
-	}
-
-	err = WriteFile(identifiedFile, bytes)
+	err = WriteJSONFile(identifiedFile, identified)
 	if err != nil {
 		return fmt.Errorf("writing identified file: %w", err)
 	}

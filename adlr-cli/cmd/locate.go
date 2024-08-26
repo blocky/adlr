@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"encoding/json"
 	"fmt"
 	"os"
 
@@ -45,7 +44,9 @@ func Locate(
 	locatedFile string,
 ) error {
 	buildlist, err := os.Open(buildlistFile)
-	defer buildlist.Close()
+	defer func() {
+		_ = buildlist.Close()
+	}()
 	if err != nil {
 		return fmt.Errorf("opening buildlist file: %w", err)
 	}
@@ -65,12 +66,7 @@ func Locate(
 		missing = err.Error()
 	}
 
-	bytes, err := json.MarshalIndent(located, "", "\t")
-	if err != nil {
-		return fmt.Errorf("marshaling located list: %w", err)
-	}
-
-	err = WriteFile(locatedFile, bytes)
+	err = WriteJSONFile(locatedFile, located)
 	if err != nil {
 		return fmt.Errorf("writing located file: %w", err)
 	}

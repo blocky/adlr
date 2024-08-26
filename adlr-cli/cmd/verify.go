@@ -1,9 +1,7 @@
 package cmd
 
 import (
-	"encoding/json"
 	"fmt"
-	"os"
 
 	"github.com/blocky/adlr"
 	"github.com/spf13/cobra"
@@ -42,17 +40,10 @@ func Verify(
 	identifiedFile string,
 	verifiedFile string,
 ) error {
-	identifiedList, err := os.Open(identifiedFile)
-	defer identifiedList.Close()
-	if err != nil {
-		return fmt.Errorf("opening identified file: %w", err)
-	}
-
-	decoder := json.NewDecoder(identifiedList)
 	var identified []adlr.DependencyLock
-	err = decoder.Decode(&identified)
+	err := ReadJSONFile(identifiedFile, &identified)
 	if err != nil {
-		return fmt.Errorf("decoding identified list: %w", err)
+		return fmt.Errorf("reading identified file: %w", err)
 	}
 
 	invalid := ""
@@ -62,12 +53,7 @@ func Verify(
 		invalid = err.Error()
 	}
 
-	bytes, err := json.MarshalIndent(verified, "", "\t")
-	if err != nil {
-		return fmt.Errorf("marshaling verified list: %w", err)
-	}
-
-	err = WriteFile(verifiedFile, bytes)
+	err = WriteJSONFile(verifiedFile, verified)
 	if err != nil {
 		return fmt.Errorf("writing verified file: %w", err)
 	}
