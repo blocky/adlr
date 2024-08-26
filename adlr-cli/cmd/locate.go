@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"bytes"
 	"fmt"
 	"os"
 
@@ -42,16 +43,13 @@ func Locate(
 	buildlistFile string,
 	locatedFile string,
 ) error {
-	buildlist, err := os.Open(buildlistFile)
-	defer func() {
-		_ = buildlist.Close()
-	}()
+	buildlist, err := os.ReadFile(buildlistFile)
 	if err != nil {
 		return fmt.Errorf("opening buildlist file: %w", err)
 	}
 
 	parser := gotool.MakeBuildListParser()
-	mods, err := parser.ParseModuleList(buildlist)
+	mods, err := parser.ParseModuleList(bytes.NewReader(buildlist))
 	if err != nil {
 		return fmt.Errorf("parsing module list: %w", err)
 	}
