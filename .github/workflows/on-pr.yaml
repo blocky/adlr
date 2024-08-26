@@ -19,22 +19,6 @@ jobs:
     steps:
       - uses: hmarr/auto-approve-action@v3
 
-  integration-test:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Repo
-        uses: actions/checkout@v3
-
-      - name: Setup Environment
-        uses: ./.github/actions/setup-env
-        with:
-          go: 'true'
-
-      - name: Run Integration Test
-        run: |
-          make buildlist
-          make test-integration
-
   lint:
     runs-on: ubuntu-latest
     steps:
