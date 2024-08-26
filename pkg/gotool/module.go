@@ -35,7 +35,7 @@ func FilterImportModules(
 	modules []Module,
 ) []Module {
 	return lo.Filter(modules, func(module Module, _ int) bool {
-		return module.Main == false
+		return !module.Main
 	})
 }
 

@@ -1,7 +1,7 @@
 package ascertain_test
 
 import (
-	"io/ioutil"
+	"os"
 	"testing"
 
 	"github.com/go-enry/go-license-detector/v4/licensedb"
@@ -86,7 +86,7 @@ func TestLicenseMinerMeetsMinimumLead(t *testing.T) {
 func TestLicenseMinerDetermineLicenseText(t *testing.T) {
 	t.Run("happy path", func(t *testing.T) {
 		path := MinerHappyPathPath
-		bytes, err := ioutil.ReadFile(path)
+		bytes, err := os.ReadFile(path)
 		assert.Nil(t, err)
 		expected := string(bytes)
 
