@@ -16,7 +16,7 @@ var ExemptMods []string
 var locateCmd = &cobra.Command{
 	Use:   "locate",
 	Short: "Locate dependency licenses",
-	Long: "Outputs a json file containing located licenses."
+	Long:  "Outputs a json file containing located licenses.",
 	Run: func(cmd *cobra.Command, args []string) {
 		err := Locate(BuildlistFile, LocatedFile)
 		ExitOnErr(err)
