@@ -58,4 +58,4 @@ test-unit: tidy
 	@$(GOTEST) -short ./$(ADLR_SRC)/...
 
 tidy:
-	$(GOTIDY)
+	@$(GOTIDY)
