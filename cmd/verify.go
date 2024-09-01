@@ -3,7 +3,7 @@ package cmd
 import (
 	"fmt"
 
-	"github.com/blocky/adlr"
+	adlr "github.com/blocky/adlr/pkg"
 	"github.com/spf13/cobra"
 )
 

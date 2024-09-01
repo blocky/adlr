@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/blocky/adlr"
+	adlr "github.com/blocky/adlr/pkg"
 	"github.com/blocky/adlr/pkg/gotool"
 	"github.com/spf13/cobra"
 )
