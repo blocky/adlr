@@ -28,11 +28,10 @@ jobs:
       - name: Setup Environment
         uses: ./.github/actions/setup-env
         with:
-          go: 'true'
           go-cache: 'false'
 
       - name: Lint
         uses: golangci/golangci-lint-action@v6
         with:
-          version: v1.57.1
+          version: v1.60.3
           args: --timeout=3m --config=./golangci.yaml
