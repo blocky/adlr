@@ -3,7 +3,7 @@ GO=$(GOFLAGS) go
 GOTEST=$(GO) test -count=1
 GOMOD=$(GO) mod
 GOTIDY=$(GOMOD) tidy
-GOLIST=$(GO) list
+GORUN=$(GO) run
 GOBUILD=$(GO) build
 
 INTEGRATION=internal/integration
@@ -40,7 +40,7 @@ build-linux-amd64: version
 	adlr linux amd64 ./$(ADLR_MAIN) ./$(BIN)
 
 buildlist: tidy
-	@$(GOLIST) -m -json all > $(BUILDLIST)
+	@$(GORUN) ./main.go license buildlist -b $(BUILDLIST)
 
 lint:
 	@golangci-lint run --config ./golangci.yaml
@@ -51,7 +51,7 @@ version:
 # testing
 test: test-unit test-integration
 
-test-integration: tidy buildlist
+test-integration: tidy
 	@$(GOTEST) -timeout=$(TIMEOUT) ./$(INTEGRATION)/...
 
 test-unit: tidy
