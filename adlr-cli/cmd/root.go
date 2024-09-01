@@ -19,7 +19,7 @@ func Execute() {
 
 func ExitOnErr(err error) {
 	if err != nil {
-		fmt.Fprintf(os.Stderr, err.Error()+"\n")
+		fmt.Fprintf(os.Stderr, "%s\n", err.Error())
 		os.Exit(1)
 	}
 }
