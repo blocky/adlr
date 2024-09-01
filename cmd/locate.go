@@ -1,16 +1,13 @@
 package cmd
 
 import (
-	"bytes"
 	"fmt"
-	"os"
 
 	adlr "github.com/blocky/adlr/pkg"
 	"github.com/blocky/adlr/pkg/gotool"
 	"github.com/spf13/cobra"
 )
 
-var BuildlistFile string
 var LocatedFile string
 var ExemptMods []string
 
@@ -43,19 +40,14 @@ func Locate(
 	buildlistFile string,
 	locatedFile string,
 ) error {
-	buildlist, err := os.ReadFile(buildlistFile)
+	var buildlist []gotool.Module
+	err := ReadJSONFile(buildlistFile, &buildlist)
 	if err != nil {
-		return fmt.Errorf("reading buildlist file: %w", err)
-	}
-
-	parser := gotool.MakeBuildListParser()
-	mods, err := parser.ParseModuleList(bytes.NewReader(buildlist))
-	if err != nil {
-		return fmt.Errorf("parsing module list: %w", err)
+		return fmt.Errorf("readinb buildlist file: %w", err)
 	}
 
 	missing := ""
-	mods = gotool.FilterImportModules(mods)
+	mods := gotool.FilterImportModules(buildlist)
 	mods = gotool.RemoveExemptModules(mods, ExemptMods)
 	prospects := adlr.MakeProspects(mods...)
 	located, err := adlr.MakeProspector().Prospect(prospects...)
