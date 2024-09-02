@@ -10,7 +10,7 @@ INTEGRATION=internal/integration
 TIMEOUT=5m
 
 ADLR_SRC=pkg
-ADLR_MAIN=adlr-cli
+ADLR_MAIN=./main.go
 
 BIN=bin
 SCRIPTS=sh
