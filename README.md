@@ -122,4 +122,4 @@ Contributions are welcome! Contact BLOCKY through our website [www.blocky.rocks]
 Due to recent errors in PR merges to the main branch, *all PR's must initially merge into the* **develop branch**, **checked for bugs**, *then a PR merging* **develop's** *changes into* **main**
 
 ### Squash Merging
-We use squash merging for PR's. Therefore, not all of your commits are required to pass testing **besides your the last commit**
+We use squash merging for PR's. Therefore, not all of your commits are required to pass testing **besides the last commit**
