@@ -42,14 +42,20 @@ func WriteJSONFile(
 	if err != nil {
 		return fmt.Errorf("marshaling bytes: %w", err)
 	}
+	return WriteFile(filename, bytes)
+}
 
+func WriteFile(
+	filename string,
+	content []byte,
+) error {
 	file, err := os.Create(filename)
 	if err != nil {
 		return fmt.Errorf("creating file: %w", err)
 	}
 	defer file.Close()
 
-	_, err = file.Write(bytes)
+	_, err = file.Write(content)
 	if err != nil {
 		return fmt.Errorf("writing bytes: %w", err)
 	}

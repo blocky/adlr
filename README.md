@@ -5,16 +5,18 @@
 [![Build Status](https://www.travis-ci.com/blocky/adlr.svg?token=JczzdP6eMqmEqysZ8pDf&branch=main)](https://www.travis-ci.com/blocky/adlr)
 [![Go Report Card](https://goreportcard.com/badge/github.com/blocky/adlr)](https://goreportcard.com/report/github.com/blocky/adlr)
 
-ADLR is a project that attempts to automate fulfillment of golang module dependency license requirements in a lock file suitable for vcs.
-
-For our dependencies and their licenses, see [license.lock](license.lock)
+ADLR is a project that attempts to automate fulfillment of golang module dependency license requirements in files suitable for vcs.
 
 # Disclaimer
-**The ADLR project offers no legal advice or license compliance guarantee. It is your responsibility to ensure compliance with licenses you interact with**
+**The ADLR project offers no legal advice or license compliance guarantee.
+It is your responsibility to ensure compliance with licenses you interact with**
 
 # Overview
 ## ADLR's License Lock
-ADLR creates a license lock file. This is a readable and manually edittable json file of your directly imported golang dependencies and their licenses. It is much like a `go.mod`, and you can save this file in your version control system. Some benefits of this:
+ADLR creates a license lock file.
+This is a readable and manually edittable json file of your directly imported golang dependencies and their licenses.
+It is much like a `go.mod`, and you can save this file in your version control system.
+Some benefits of this:
 + monitor imports' licenses across versions
 + automate listing *copyrights*|*permissions*|*warranties* for licenses in your source code
 
@@ -27,92 +29,88 @@ Automate a license information command for your distributable with your license 
 ### Linker Flag
 1. Serialize the lock file _(Go Linker flag requires strings to have no spaces or newlines)_
 2. Pass to a variable in your code with the `-ldflags` build flag
-3. Deserialize and unmarshal for license information command(s)
+3. Deserialize and unmarshal for license information
 
 ### Go 1.16 File Embedding
-1. Embed your license lock file with an embed directive:
+1. Embed your verified license file with an embed directive:
 ```golang
-\\go:embed license.lock
-var DependencyRequirements []byte
+\\go:embed verified-licenses.json
+var LicensesBytes []byte
 ```
-2. Unmarshal for license information command(s)
-
-An example of this is built in to the repo. See `main.go`and the `cmd/` folder for details. Or test out ADLR's `about license(s)` commands with `go get` or `make build`.
+2. Unmarshal for license information
+```golang
+var licenses []adlr.DependencyLock
+err := json.Unmarshal(licenses, &LicensesBytes)
+```
 
 # ADLR Process
+The ADLR process consists of 4 steps:
+1. Generate a list of module dependencies required to build your go project
+2. Locate the license files for each of the dependencies
+3. Identify the license types for each of the dependencies
+4. Verify the license types against a whitelist of allowed licenses
+
+This functionality is realized in the `adlr/cmd` source code which is compiled as the `adlr-cli` tool.
+
 ## Your Golang Module buildlist
-Using the command in your golang module:
-```sh
-$ go list -m -json all > buildlist.json
-```
-you can generate a json list of all golang modules/projects required to build your module.
-If your project is complex this list can be long. Currently, ADLR filters for directly imported modules only.
-```golang
-buildlist, err := os.Open("./buildlist.json")
-...
-defer buildlist.Close()
+Use the `adlr-cli` tool in your golang module:
+```bash
+# cd to go project directory (that contains mod file)
+# Default output file is `./buildlist.json` 
+$ adlr-cli license buildlist
 
-parser := gotool.MakeBuildListParser()
-mods, err := parser.ParseModuleList(buildlist)
-...
-
-direct := gotool.FilterDirectImportModules(mods)
+# Or output to specific file
+$ adlr-cli license buildlist -b /path/to/my-buildlist.json
 ```
+This will generate a json list of all golang modules/projects required to build your module.
 
 ## Text Mining Licenses
-Unfortunately, golang does not yet have a standard for module license files. There names can be lowercase, uppercase, with or without a file extension, or not even named "license", such as "COPYLEFT". To solve this, ADLR uses text mining to prospect potential license file matches and their confidences with https://github.com/go-enry/go-license-detector.
-```golang
-direct := gotool.FilterDirectImportModules(mods)
+Unfortunately, golang does not yet have a standard for module license files.
+There names can be lowercase, uppercase, with or without a file extension, or not even named "license", such as "COPYLEFT".
+To solve this, ADLR uses [go-license-detector](https://github.com/go-enry/go-license-detector) to text mine projects for potential license files.
+For licenses that cannot be located, they will be appended to a list and output to stderr.
+```bash
+# Assumes existence of `./buildlist.json` file
+# Default output file is `./located-licenses.json`
+$ adlr-cli license locate
 
-prospects := adlr.MakeProspects(direct...)
-prospector := adlr.MakeProspector()
-mines, err := prospector.Prospect(prospects...)
-...
+# Or provide custom input and output files
+$ adlr-cli license locate \
+-b /path/to/my-buildlist.json \
+-l /path/to/my-located-licenses.json
 ```
 
 ## Automatically Determining License
-From prospecting, one or multiple matches are returned for a golang module with license type, file name, and confidence. With preset confidence values, ADLR attempts to automatically determine the license for each golang module. If a license cannot be determined through mining, the license lock manager may be able to automatically determine it (only if a license lock file has already been created).
-```golang
-mines, err := prospector.Prospect(prospects...)
-...
+From prospecting, one or multiple matches are returned for a golang module with license type, file name, and confidence.
+With preset confidence values, ADLR attempts to automatically determine the license for each golang module.
+For licenses that cannot be determined, they will be appended to a list and output to stderr.
+```bash
+# Assumes existence of `./located-licenses.json` file
+# Default output file is `./identified-licenses.json`
+$ adlr-cli license identify
 
-miner := adlr.MakeMiner()
-locks, err := miner.Mine(mines...)
-if err != nil && Verbose {
-	fmt.Println(err)
-}
-```
-
-## Locking Dependencies and their Licenses
-After mining, licenses are hopefully automatically determined. These are now ready to be locked into a file. For no pre-existing license lock, a new file is created. For an existing license lock, the new and old list of dependencies are merged.
-
-New dependencies take priority, and will fill the lock file. But for new locks that are missing license fields, merging is attempted with pre-existing locks. For new locks that cannot be automatically resolved, the license lock manager will print them in stderr, asking for manual editting of the license lock file. These license edits will persist for that dependency.
-```golang
-locks, err := miner.Mine(mines...)
-...
-
-licenselock := adlr.MakeLicenseLockManager("./")
-err = licenselock.Lock(locks...)
-...
+# Or provide custom input and output files
+$ adlr-cli license identify \
+-l /path/to/my-located-licenses.json \
+-i /path/to/my-identified-licenses.json
 ```
 
 ## Auditing Locked License types
-After locking, dependencies and their licenses have been written to the lock file. But unwanted license types may have slipped through. The auditing step will search through the lock file, checking license types against a whitelist. For any types not listed, an error is returned listing bad license types, and requesting whitelist inclusion or dependency removal.
-```golang
-licenselock := adlr.MakeLicenseLockManager("./")
-err = licenselock.Lock(locks...)
-...
+Finally, identified licenses are compared to a whitelist of approved license types and those that pass are written to a final file.
+Licenses that are not on the whitelist are appended to a list and output to stderr.
+```bash
+# Assumes existence of `./identified-licenses.json` file
+# Default output file is `./verified-licenses.json`
+$ adlr-cli license verify
 
-locks, err = licenselock.Read()
-...
-
-whitelist := adlr.MakeWhitelist([]string{"A","B","C"...})
-auditor := adlr.MakeAuditor(whitelist)
-err = auditor.Audit(locks...)
-...
+# Or provide custom input and output files
+$ adlr-cli license verify \
+-i /path/to/my-located-licenses.json \
+-v /path/to/my-verified-licenses.json
 ```
+
 # Development
-Contributions are welcome! Contact BLOCKY through our website [www.blocky.rocks](www.blocky.rocks) or email **ian@blocky.rocks**
+Contributions are welcome! Contact BLOCKY through our website [www.blocky.rocks](www.blocky.rocks).
 
 ## Branch Practices
 ### Branches
@@ -124,7 +122,4 @@ Contributions are welcome! Contact BLOCKY through our website [www.blocky.rocks]
 Due to recent errors in PR merges to the main branch, *all PR's must initially merge into the* **develop branch**, **checked for bugs**, *then a PR merging* **develop's** *changes into* **main**
 
 ### Squash Merging
-We use squash merging for PR's. Therefore, not all of your commits are required to pass testing **besides your the last commit**
-
-## Dependencies for testing
-Mockery - mockery v1 is used to autogenerate code for golang interfaces. Mocked interfaces are outputted to the `internal/mocks/` folder. The golang binary tool can be downloaded from https://github.com/vektra/mockery
+We use squash merging for PR's. Therefore, not all of your commits are required to pass testing **besides the last commit**

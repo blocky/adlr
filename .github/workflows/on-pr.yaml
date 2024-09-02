@@ -19,6 +19,18 @@ jobs:
     steps:
       - uses: hmarr/auto-approve-action@v3
 
+  integration-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+
+      - name: Setup Environment
+        uses: ./.github/actions/setup-env
+
+      - name: Run Integration Tests
+        run: make test-integration
+
   lint:
     runs-on: ubuntu-latest
     steps:
@@ -28,11 +40,10 @@ jobs:
       - name: Setup Environment
         uses: ./.github/actions/setup-env
         with:
-          go: 'true'
           go-cache: 'false'
 
       - name: Lint
         uses: golangci/golangci-lint-action@v6
         with:
-          version: v1.57.1
+          version: v1.60.3
           args: --timeout=3m --config=./golangci.yaml

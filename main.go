@@ -3,7 +3,7 @@ package main
 import (
 	_ "embed"
 
-	"github.com/blocky/adlr/adlr-cli/cmd"
+	"github.com/blocky/adlr/cmd"
 )
 
 //go:embed version

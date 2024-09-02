@@ -38,12 +38,10 @@ func (l LimitedReader) ReadFileFromPath(
 	filepath string,
 ) ([]byte, error) {
 	file, err := os.Open(filepath)
-	defer func() {
-		_ = file.Close()
-	}()
 	if err != nil {
 		return nil, err
 	}
+	defer file.Close()
 	return l.ReadFile(file)
 }
 

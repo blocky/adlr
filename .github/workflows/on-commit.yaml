@@ -15,8 +15,6 @@ jobs:
 
       - name: Setup Environment
         uses: ./.github/actions/setup-env
-        with:
-          go: 'true'
 
       - name: Run Unit Tests
         run: make test-unit
