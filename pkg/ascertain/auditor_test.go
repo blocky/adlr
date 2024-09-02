@@ -15,21 +15,21 @@ var cerealList = []string{
 }
 
 var AuditLocks = []ascertain.DependencyLock{
-	ascertain.DependencyLock{
+	{
 		Name:    "1",
 		Version: "v1",
 		License: ascertain.License{
 			Kind: "fruitloops",
 		},
 	},
-	ascertain.DependencyLock{
+	{
 		Name:    "2",
 		Version: "v2",
 		License: ascertain.License{
 			Kind: "cheerios",
 		},
 	},
-	ascertain.DependencyLock{
+	{
 		Name:    "3",
 		Version: "v3",
 		License: ascertain.License{
@@ -75,29 +75,14 @@ func TestLicenseAuditorAudit(t *testing.T) {
 		w := ascertain.MakeLicenseWhitelist(cerealList)
 		a := ascertain.MakeLicenseAuditor(w)
 
-		err := a.Audit(AuditLocks...)
+		verified, err := a.Audit(AuditLocks...)
 		assert.Nil(t, err)
+		assert.Equal(t, verified, AuditLocks)
 	})
 	t.Run("error on non-whitelisted licenses", func(t *testing.T) {
-		w := ascertain.MakeLicenseWhitelist([]string{"unicorn"})
+		w := ascertain.MakeLicenseWhitelist([]string{"fruitloops", "cheerios"})
 		a := ascertain.MakeLicenseAuditor(w)
 		auditErr := "detected non-whitelisted licenses. Remove or Whitelist: [\n " +
-			"{\n  " +
-			"\"name\": \"1\",\n  " +
-			"\"version\": \"v1\",\n  " +
-			"\"err\": \"non-whitelisted license: fruitloops\",\n  " +
-			"\"license\": {\n   " +
-			"\"kind\": \"fruitloops\",\n   " +
-			"\"text\": \"\"\n  " +
-			"}\n },\n " +
-			"{\n  " +
-			"\"name\": \"2\",\n  " +
-			"\"version\": \"v2\",\n  " +
-			"\"err\": \"non-whitelisted license: cheerios\",\n  " +
-			"\"license\": {\n   " +
-			"\"kind\": \"cheerios\",\n   " +
-			"\"text\": \"\"\n  " +
-			"}\n },\n " +
 			"{\n  " +
 			"\"name\": \"3\",\n  " +
 			"\"version\": \"v3\",\n  " +
@@ -107,7 +92,8 @@ func TestLicenseAuditorAudit(t *testing.T) {
 			"\"text\": \"\"\n  " +
 			"}\n }\n]"
 
-		err := a.Audit(AuditLocks...)
+		verified, err := a.Audit(AuditLocks...)
 		assert.EqualError(t, err, auditErr)
+		assert.Equal(t, verified, AuditLocks[:2])
 	})
 }

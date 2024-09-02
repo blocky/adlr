@@ -3,7 +3,7 @@ package reader
 import (
 	"errors"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"os"
 )
 
@@ -38,10 +38,10 @@ func (l LimitedReader) ReadFileFromPath(
 	filepath string,
 ) ([]byte, error) {
 	file, err := os.Open(filepath)
-	defer file.Close()
 	if err != nil {
 		return nil, err
 	}
+	defer file.Close()
 	return l.ReadFile(file)
 }
 
@@ -53,7 +53,7 @@ func (l LimitedReader) ReadFile(
 	if err != nil {
 		return nil, err
 	}
-	return ioutil.ReadAll(file)
+	return io.ReadAll(file)
 }
 
 func checkSize(

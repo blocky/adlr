@@ -3,28 +3,10 @@ package adlr
 import (
 	"github.com/blocky/adlr/pkg/ascertain"
 	"github.com/blocky/adlr/pkg/reader"
-	"github.com/blocky/prettyprinter"
 )
 
-var (
-	// DepLocksToDepLockMap is function alias for ascertain.DepLocksToDepLockMap
-	DepLocksToDepLockMap = ascertain.DepLocksToDepLockMap
-
-	// MarshalDependencyLocks is function alias for ascertain.MarshalDependencyLocks
-	MarshalDependencyLocks = ascertain.MarshalDependencyLocks
-
-	// MakeProspects is a type alias for ascertain.MakeProspects
-	MakeProspects = ascertain.MakeProspects
-
-	// UnmarshalDependencyLocks is a function alias for ascertain.UnmarshalDependencyLocks
-	UnmarshalDependencyLocks = ascertain.UnmarshalDependencyLocks
-
-	// DeserializeLocks is function alias for ascertain.DeserializeLocks
-	DeserializeLocks = ascertain.DeserializeLocks
-
-	// SerializeLocks is function alias for ascertain.SerializeLocks
-	SerializeLocks = ascertain.SerializeLocks
-)
+// MakeProspects is a type alias for ascertain.MakeProspects
+var MakeProspects = ascertain.MakeProspects
 
 // Prospect is a type alias for ascertain.Prospect
 type Prospect = ascertain.Prospect
@@ -75,44 +57,6 @@ func MakeMinerFromRaw(
 	return ascertain.MakeLicenseMinerFromRaw(minimums, reader)
 }
 
-// Locker is a type alias for ascertain.Locker
-type Locker = ascertain.Locker
-
-// MakeLocker creates a Locker
-func MakeLocker() Locker {
-	return ascertain.MakeDependencyLocker()
-}
-
-// LicenseLockManager is a file manager for the license.lock file.
-// Lock() will create a new file or merge with an existing.
-// Read() will return a list of DependencyLocks, if a file exists.
-type LicenseLockManager interface {
-	Lock(...DependencyLock) error
-	Read() ([]DependencyLock, error)
-}
-
-// MakeLicenseLockManager creates a LicenseLockManager with specified directory
-func MakeLicenseLockManager(
-	dir string,
-) LicenseLockManager {
-	return ascertain.MakeLicenseLock(dir)
-}
-
-// MakeLicenseLockFromRaw creates a LicenseLockManager from specified parameters
-func MakeLicenseLockFromRaw(
-	locker Locker,
-	path string,
-	printer prettyprinter.Printer,
-	reader *reader.LimitedReader,
-) LicenseLockManager {
-	return ascertain.MakeLicenseLockFromRaw(
-		locker,
-		path,
-		printer,
-		reader,
-	)
-}
-
 // This list is of SPDX License Identifiers, the standard
 // used by the text-mining package:
 // github.com/go-enry/go-license-detector/v4
@@ -143,7 +87,7 @@ func MakeWhitelist(
 // against a license whitelist, returning an error of all offending
 // DependencyLocks and their non-whitelisted licenses
 type Auditor interface {
-	Audit(...DependencyLock) error
+	Audit(...DependencyLock) ([]DependencyLock, error)
 }
 
 // MakeAuditor creates an Auditor with a specified Whitelist

@@ -3,8 +3,6 @@ package ascertain
 import (
 	"encoding/json"
 	"fmt"
-
-	"github.com/blocky/prettyprinter"
 )
 
 const (
@@ -13,7 +11,6 @@ const (
 	LicProsErr  = "error license prospecting: %v"
 	LicMineErr  = "error license mining: %v"
 	LicAuditErr = "detected non-whitelisted licenses. Remove or Whitelist: %v"
-	DepLockErr  = "error locking dependencies %v:"
 )
 
 type MinConfidenceError struct {
@@ -54,46 +51,6 @@ func (lme LicenseMineError) Error() string {
 		return fmt.Sprintf("could not marshal: %v", err)
 	}
 	return fmt.Sprintf(LicMineErr, string(bytes))
-}
-
-type DependencyLockerError struct {
-	Locks []DependencyLock
-}
-
-func (dle DependencyLockerError) Error() string {
-	bytes, err := json.MarshalIndent(dle.Locks, "", " ")
-	if err != nil {
-		return fmt.Sprintf("could not marshal: %v", err)
-	}
-	return fmt.Sprintf(DepLockErr, string(bytes))
-}
-
-type LockerError struct {
-	Name    string `json:"name"`
-	Version string `json:"version"`
-
-	Err []prettyprinter.FieldError `json:"errors"`
-}
-
-func MakeLockerError(
-	name, version string,
-	errs ...error,
-) LockerError {
-	return LockerError{
-		Name:    name,
-		Version: version,
-		Err:     makeFieldErrors(errs),
-	}
-}
-
-func makeFieldErrors(
-	errs []error,
-) []prettyprinter.FieldError {
-	var fieldErrs = make([]prettyprinter.FieldError, len(errs))
-	for i, err := range errs {
-		fieldErrs[i] = prettyprinter.FieldError{err}
-	}
-	return fieldErrs
 }
 
 type LicenseAuditError struct {

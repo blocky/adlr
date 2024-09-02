@@ -1,7 +1,6 @@
 package gotool_test
 
 import (
-	"os"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -20,10 +19,36 @@ var ModuleStr = `{` +
 	`"Dir":"/home/user/path"}`
 
 var Modules = []gotool.Module{
-	gotool.Module{
-		Path:    "github.com/spf13/cobra",
-		Version: "v0.0.5",
-		Dir:     "/home/user/go/pkg/mod/github.com/spf13/cobra@v0.0.5",
+	{
+		Path:     "bky.sh/pallets/client",
+		Main:     true,
+		Indirect: false,
+		Dir:      "/home/user/Work/bky.sh/pallets/client",
+	},
+	{
+		Path:    "bky.sh/pallets/nub",
+		Version: "v0.0.0",
+		Replace: &gotool.Module{
+			Path: "../nub",
+			Dir:  "/home/user/Work/bky.sh/pallets/nub",
+		},
+		Main:     false,
+		Indirect: false,
+		Dir:      "/home/user/Work/bky.sh/pallets/nub",
+	},
+	{
+		Path:     "cirello.io/pglock",
+		Version:  "v1.8.1-0.20200922151210-b76be34db4ac",
+		Main:     false,
+		Indirect: true,
+		Dir:      "/home/user/go/pkg/mod/cirello.io/pglock@v1.8.1-0.20200922151210-b76be34db4ac",
+	},
+	{
+		Path:     "github.com/spf13/cobra",
+		Version:  "v0.0.5",
+		Main:     false,
+		Indirect: false,
+		Dir:      "/home/user/go/pkg/mod/github.com/spf13/cobra@v0.0.5",
 	},
 }
 
@@ -52,23 +77,24 @@ func TestModuleUnmarshal(t *testing.T) {
 	})
 }
 
-func TestFilterDirectImportModules(t *testing.T) {
-	t.Run("happy path", func(t *testing.T) {
-		f, _ := os.Open(TestDirModule + "directimports.json")
-		p := gotool.MakeBuildListParser()
-		list, err := p.ParseModuleList(f)
-		assert.Nil(t, err)
+func TestFilterImportModules(t *testing.T) {
+	t.Run("happy path - filter all but main", func(t *testing.T) {
+		result := gotool.FilterImportModules(Modules)
+		assert.NotContains(t, result, Modules[0])
+	})
+	t.Run("happy path - empty on only main import", func(t *testing.T) {
+		result := gotool.FilterImportModules([]gotool.Module{Modules[0]})
+		assert.Equal(t, []gotool.Module{}, result)
+	})
+}
 
-		result := gotool.FilterDirectImportModules(list)
+func TestRemoveExemptModules(t *testing.T) {
+	t.Run("happy path - empty exempt list", func(t *testing.T) {
+		result := gotool.RemoveExemptModules(Modules, []string{})
 		assert.Equal(t, Modules, result)
 	})
-	t.Run("empty on no direct imports", func(t *testing.T) {
-		f, _ := os.Open(TestDirModule + "indirectimports.json")
-		p := gotool.MakeBuildListParser()
-		list, err := p.ParseModuleList(f)
-		assert.Nil(t, err)
-
-		result := gotool.FilterDirectImportModules(list)
-		assert.Equal(t, []gotool.Module(nil), result)
+	t.Run("happy path - exempt list", func(t *testing.T) {
+		result := gotool.RemoveExemptModules(Modules, []string{Modules[0].Path})
+		assert.NotContains(t, result, Modules[0])
 	})
 }

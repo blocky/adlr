@@ -1,2 +1,2 @@
-buildlist.json
+*.json
 bin/*
