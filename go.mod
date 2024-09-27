@@ -8,6 +8,7 @@ require (
 	github.com/samber/lo v1.47.0
 	github.com/spf13/cobra v1.6.1
 	github.com/stretchr/testify v1.8.4
+	golang.org/x/mod v0.17.0
 )
 
 require (
@@ -41,7 +42,6 @@ require (
 	github.com/xanzy/ssh-agent v0.3.3 // indirect
 	golang.org/x/crypto v0.23.0 // indirect
 	golang.org/x/exp v0.0.0-20230126173853-a67bb567ff2e // indirect
-	golang.org/x/mod v0.17.0 // indirect
 	golang.org/x/net v0.25.0 // indirect
 	golang.org/x/sync v0.7.0 // indirect
 	golang.org/x/sys v0.20.0 // indirect
