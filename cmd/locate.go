@@ -9,6 +9,7 @@ import (
 	"github.com/blocky/adlr/pkg/gotool"
 	"github.com/spf13/cobra"
 	"golang.org/x/mod/modfile"
+	"golang.org/x/mod/module"
 )
 
 var LocatedFile string
@@ -60,20 +61,30 @@ func Locate(
 		return fmt.Errorf("parsing go mod file: %w", err)
 	}
 
-	// NOTE: This does not handle replaced or retracted modules
-	mods := make([]gotool.Module, 0)
-	for _, dep := range modFile.Require {
-		mods = append(mods, gotool.Module{
-			Path:     dep.Mod.Path,
-			Dir:      "./vendor/" + dep.Mod.Path,
-			Version:  dep.Mod.Version,
-			Indirect: dep.Indirect,
+	replace := make(map[string]module.Version, 0)
+	for _, mod := range modFile.Replace {
+		replace[mod.Old.Path] = mod.New
+	}
+
+	require := make([]gotool.Module, 0)
+	for _, mod := range modFile.Require {
+		if val, ok := replace[mod.Mod.Path]; ok {
+			mod.Mod.Path = val.Path
+			mod.Mod.Version = val.Version
+
+		}
+
+		require = append(require, gotool.Module{
+			Path:     mod.Mod.Path,
+			Dir:      "./vendor/" + mod.Mod.Path,
+			Version:  mod.Mod.Version,
+			Indirect: mod.Indirect,
 		})
 	}
 
 	missing := ""
-	mods = gotool.RemoveExemptModules(mods, ExemptMods)
-	prospects := adlr.MakeProspects(mods...)
+	require = gotool.RemoveExemptModules(require, ExemptMods)
+	prospects := adlr.MakeProspects(require...)
 	located, err := adlr.MakeProspector().Prospect(prospects...)
 	if err != nil {
 		missing = err.Error()
