@@ -3,10 +3,11 @@ package cmd
 import (
 	"fmt"
 
+	"github.com/spf13/cobra"
+
 	adlr "github.com/blocky/adlr/pkg"
 	"github.com/blocky/adlr/pkg/ascertain"
 	"github.com/blocky/adlr/pkg/reader"
-	"github.com/spf13/cobra"
 )
 
 var IdentifiedFile string

@@ -3,8 +3,9 @@ package cmd
 import (
 	"fmt"
 
-	adlr "github.com/blocky/adlr/pkg"
 	"github.com/spf13/cobra"
+
+	adlr "github.com/blocky/adlr/pkg"
 )
 
 var VerifiedFile string
