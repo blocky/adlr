@@ -41,6 +41,9 @@ build-linux-amd64: version
 lint:
 	@golangci-lint run --config ./golangci.yaml
 
+vendor: tidy
+	@$(GOMOD) vendor
+
 version:
 	@printf $(GIT_TAG) > $(VERSION)
 
