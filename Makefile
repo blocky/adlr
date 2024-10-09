@@ -50,7 +50,7 @@ version:
 # testing
 test: test-unit test-integration
 
-test-integration: tidy
+test-integration: vendor
 	@$(GOTEST) -timeout=$(TIMEOUT) ./$(INTEGRATION)/...
 
 test-unit: tidy
