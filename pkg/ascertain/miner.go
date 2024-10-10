@@ -13,7 +13,7 @@ import (
 const Confidence float32 = 0.85
 
 // Minimum confidence difference of primary from secondary license matches
-const Lead float32 = 0.07
+const Lead float32 = 0.05
 
 // Holds confidence values for a LicenseMiner
 type Minimums struct {

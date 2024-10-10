@@ -15,7 +15,6 @@ ADLR_MAIN=./main.go
 BIN=bin
 SCRIPTS=sh
 
-BUILDLIST=buildlist.json
 VERSION=$(ADLR_MAIN)/version
 
 GIT_TAG=$(shell git describe --tags)
@@ -39,11 +38,11 @@ build-linux-amd64: version
 	@$(SCRIPTS)/build.sh \
 	adlr linux amd64 ./$(ADLR_MAIN) ./$(BIN)
 
-buildlist: tidy
-	@$(GORUN) ./main.go license buildlist -b $(BUILDLIST)
-
 lint:
 	@golangci-lint run --config ./golangci.yaml
+
+vendor: tidy
+	@$(GOMOD) vendor
 
 version:
 	@printf $(GIT_TAG) > $(VERSION)
@@ -51,7 +50,7 @@ version:
 # testing
 test: test-unit test-integration
 
-test-integration: tidy
+test-integration: vendor
 	@$(GOTEST) -timeout=$(TIMEOUT) ./$(INTEGRATION)/...
 
 test-unit: tidy

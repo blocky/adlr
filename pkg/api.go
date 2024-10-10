@@ -66,6 +66,7 @@ func MakeMinerFromRaw(
 // for license identifiers
 var DefaultWhitelist = []string{
 	"Apache-2.0",
+	"0BSD",
 	"BSD-1-Clause",
 	"BSD-2-Clause",
 	"BSD-3-Clause",
