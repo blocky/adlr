@@ -95,7 +95,5 @@ func TestADLRCLILicenseVerify(t *testing.T) {
 	require.NoError(t, err)
 
 	// then
-	errOut = strings.ReplaceAll(errOut, "detected non-whitelisted licenses. Remove or Whitelist:", "")
-	errOut = strings.ReplaceAll(errOut, "exit status 1", "")
-	assert.JSONEq(t, wantErrOut, errOut)
+	assert.Equal(t, wantErrOut, errOut)
 }
