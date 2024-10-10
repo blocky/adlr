@@ -1,8 +1,0 @@
-language: go
-os: linux
-go_import_path: github.com/blocky/prettyprinter
-go:
-  - "1.16"
-
-script:
-  - make test
